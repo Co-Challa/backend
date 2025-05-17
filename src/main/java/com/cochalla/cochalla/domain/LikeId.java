@@ -1,4 +1,4 @@
-package com.cochalla.cochalla.entity;
+package com.cochalla.cochalla.domain;
 
 import java.io.Serializable;
 import java.util.Objects;
