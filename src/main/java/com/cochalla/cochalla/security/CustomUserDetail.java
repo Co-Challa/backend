@@ -6,7 +6,7 @@ import java.util.Collections;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import com.cochalla.cochalla.entity.User;
+import com.cochalla.cochalla.domain.User;
 
 import lombok.Getter;
 

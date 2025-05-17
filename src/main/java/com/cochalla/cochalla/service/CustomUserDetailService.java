@@ -5,7 +5,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import com.cochalla.cochalla.entity.User;
+import com.cochalla.cochalla.domain.User;
 import com.cochalla.cochalla.repository.UserRepository;
 import com.cochalla.cochalla.security.CustomUserDetail;
 
