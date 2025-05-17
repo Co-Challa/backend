@@ -13,11 +13,13 @@ public class Like {
     @EmbeddedId
     private LikeId id;
 
+    @Id
     @ManyToOne
     @MapsId("postId")
     @JoinColumn(name = "post_id", nullable = false)
     private Post post;
 
+    @Id
     @ManyToOne
     @MapsId("userId")
     @JoinColumn(name = "user_id", nullable = false)
