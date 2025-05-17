@@ -20,11 +20,11 @@ public class UserService {
 
     public void signup(SignupRequestDto request){
         if (user_repository.existsByUserId(request.getUserId())){
-            throw new RuntimeException("이미 사용 중인 아이디입니다.");
+            throw new IllegalArgumentException("이미 사용 중인 아이디입니다.");
         }
 
         if (user_repository.existsByNickname(request.getNickname())){
-            throw new RuntimeException("이미 사용 중인 닉네임입니다.");
+            throw new IllegalArgumentException("이미 사용 중인 닉네임입니다.");
         }
 
         String encoded_password = password_encoder.encode(request.getPassword());
