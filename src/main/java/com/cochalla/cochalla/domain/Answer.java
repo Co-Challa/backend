@@ -1,12 +1,12 @@
 package com.cochalla.cochalla.domain;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.Getter;
 
 import java.time.LocalDateTime;
 
-@Data
 @Entity
+@Getter
 @Table(name = "answer")
 public class Answer {
 

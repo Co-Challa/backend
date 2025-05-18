@@ -1,12 +1,12 @@
 package com.cochalla.cochalla.domain;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.Getter;
 
 import java.time.LocalDateTime;
 
-@Data
 @Entity
+@Getter
 @Table(name = "comment")
 public class Comment {
 
@@ -28,4 +28,3 @@ public class Comment {
     @Column(nullable = false)
     private LocalDateTime createdAt;
 }
-

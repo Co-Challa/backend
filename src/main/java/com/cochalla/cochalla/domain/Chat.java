@@ -1,10 +1,12 @@
 package com.cochalla.cochalla.domain;
 
-import jakarta.persistence.*;
-import lombok.Data;
+import java.time.LocalDateTime;
 
-@Data
+import jakarta.persistence.*;
+import lombok.Getter;
+
 @Entity
+@Getter
 @Table(name = "chat")
 public class Chat {
 
@@ -15,5 +17,6 @@ public class Chat {
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
-}
 
+    private LocalDateTime createdAt;
+}

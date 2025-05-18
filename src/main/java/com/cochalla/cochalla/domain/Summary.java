@@ -1,12 +1,12 @@
 package com.cochalla.cochalla.domain;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.Getter;
 
 import java.time.LocalDateTime;
 
-@Data
 @Entity
+@Getter
 @Table(name = "summary")
 public class Summary {
 
@@ -30,4 +30,3 @@ public class Summary {
     @Column
     private Integer retryCount;
 }
-

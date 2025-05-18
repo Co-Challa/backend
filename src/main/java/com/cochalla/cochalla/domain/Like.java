@@ -1,10 +1,10 @@
 package com.cochalla.cochalla.domain;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.Getter;
 
-@Data
 @Entity
+@Getter
 @Table(name = "`like`")
 @IdClass(LikeId.class)
 public class Like {
@@ -19,4 +19,3 @@ public class Like {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 }
-
