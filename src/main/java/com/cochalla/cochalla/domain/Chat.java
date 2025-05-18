@@ -1,5 +1,7 @@
 package com.cochalla.cochalla.domain;
 
+import java.time.LocalDateTime;
+
 import jakarta.persistence.*;
 import lombok.Getter;
 
@@ -15,4 +17,6 @@ public class Chat {
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
+
+    private LocalDateTime createdAt;
 }
