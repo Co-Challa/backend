@@ -1,7 +1,10 @@
 package com.cochalla.cochalla.controller;
 
+import java.util.NoSuchElementException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.ResponseEntity.BodyBuilder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,24 +29,38 @@ public class PostController {
     PostServiceImpl postService;
 
     @GetMapping("/{postId}")
-    @ResponseBody
     public ResponseEntity<PostPageDto> getPost(@PathVariable Integer postId) {
-
-        PostPageDto response = postService.get(postId);
-
-        return ResponseEntity.ok(response);
+        PostPageDto response = null;
+        try {
+            response = postService.get(postId);
+            return ResponseEntity.ok(response);
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
     
     @DeleteMapping("/{postId}")
-    @ResponseBody
-    public String deletePost(@PathVariable Integer postId) {
-        return "deletePost";
+    public ResponseEntity<?> deletePost(@PathVariable Integer postId) {
+        try {
+            // require Checking Owner feature
+            
+            postService.delete(postId);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @PatchMapping("/{postId}")
-    @ResponseBody
-    public String patchPost(@PathVariable Integer postId, @RequestBody Boolean isPublic) {
-        return "pathcPost";
+    public ResponseEntity<?> patchPost(@PathVariable Integer postId, @RequestBody Boolean isPublic) {
+        try {
+            // require Checking Owner feature
+
+            postService.setPublicState(postId, isPublic);
+            return ResponseEntity.ok().build();
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @PostMapping("/{postId}/comment")
