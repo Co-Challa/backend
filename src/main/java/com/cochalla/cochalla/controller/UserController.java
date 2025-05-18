@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
 @RequiredArgsConstructor
-@CrossOrigin
+@CrossOrigin(exposedHeaders = "Authorization")
 public class UserController {
     private final UserService user_service;
 
