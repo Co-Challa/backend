@@ -1,5 +1,6 @@
 package com.cochalla.cochalla.service;
 
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,11 +11,14 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
+import com.cochalla.cochalla.domain.Post;
 import com.cochalla.cochalla.dto.CommentDto;
 import com.cochalla.cochalla.dto.PostDto;
 import com.cochalla.cochalla.dto.PostPageDto;
 import com.cochalla.cochalla.repository.CommentRepository;
 import com.cochalla.cochalla.repository.PostRepository;
+
+import jakarta.transaction.Transactional;
 
 @Service
 public class PostServiceImpl implements PostService {
@@ -28,7 +32,7 @@ public class PostServiceImpl implements PostService {
     @Override
     public PostPageDto get(Integer postId) {
         Optional<PostDto> optPost = postRepository.findPostById(postId);
-        PostDto postDto = optPost.orElseThrow();
+        PostDto postDto = optPost.orElseThrow(() -> new NoSuchElementException(postId + "번 게시물을 찾을 수 없습니다."));
 
         Sort sort = Sort.by(Direction.DESC, "createdAt");
 		Pageable pageable = PageRequest.of(0, 1, sort);        
@@ -39,15 +43,22 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public Boolean delete() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'delete'");
+    public void delete(Integer postId) {
+        if (!postRepository.existsById(postId))
+            throw new NoSuchElementException(postId + "번 게시물을 찾을 수 없습니다.");
+
+        postRepository.deleteById(postId);
     }
 
     @Override
-    public Boolean togglePublic() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'togglePublic'");
+    @Transactional
+    public void setPublicState(Integer postId, Boolean isPublic) {
+        Optional<Post> optPost = postRepository.findById(postId);
+        Post post = optPost.orElseThrow(() -> new NoSuchElementException(postId + "번 게시물을 찾을 수 없습니다."));
+
+        post.setIsPublic(isPublic);
+
+        postRepository.save(post);
     }
     
 }
