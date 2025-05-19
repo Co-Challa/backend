@@ -1,4 +1,3 @@
-// src/main/java/com/cochalla/cochalla/service/UserService.java
 package com.cochalla.cochalla.service;
 
 import com.cochalla.cochalla.dto.UserInfoDto;
@@ -19,19 +18,25 @@ import java.util.stream.Collectors;
 
 @Service
 public class UserService {
+
     @Autowired
     private UserRepository userRepository;
+
     @Autowired
     private UserPostRepository userPostRepository;
+
     @Autowired
     private UserLikedRepository userLikedRepository;
+
     @Autowired
     private UserCommentRepository userCommentRepository;
 
+    /**
+     * 사용자 기본 정보 조회
+     */
     public UserInfoDto getUserInfo(String userId) {
         User user = userRepository.findById(userId)
             .orElseThrow(() -> new RuntimeException("User not found: " + userId));
-
         return new UserInfoDto(
             user.getUserId(),
             user.getNickname(),
@@ -40,6 +45,9 @@ public class UserService {
         );
     }
 
+    /**
+     * 내 게시글 리스트 조회 (사용자가 해당 글에 좋아요 눌렀는지도 포함)
+     */
     public List<UserPostDto> getUserPosts(String userId, int offset, int limit) {
         int page = offset / limit;
         return userPostRepository
@@ -52,18 +60,22 @@ public class UserService {
                 p.getSummary().getCreatedAt(),
                 p.getComments().size(),
                 p.getLikes().size(),
-                p.getIsPublic()
+                p.getIsPublic(),
+                userLikedRepository.existsByUserUserIdAndPostPostId(userId, p.getPostId())
             ))
             .collect(Collectors.toList());
     }
 
+    /**
+     * 관심(좋아요) 게시글 리스트 조회
+     */
     public List<UserPostDto> getLikedPosts(String userId, int offset, int limit) {
         int page = offset / limit;
         return userLikedRepository
             .findByUserUserId(userId, PageRequest.of(page, limit))
             .stream()
-            .map(like -> {
-                Post p = like.getPost();
+            .map(likeEntry -> {
+                Post p = likeEntry.getPost();
                 return new UserPostDto(
                     p.getPostId(),
                     p.getSummary().getTitle(),
@@ -71,12 +83,16 @@ public class UserService {
                     p.getSummary().getCreatedAt(),
                     p.getComments().size(),
                     p.getLikes().size(),
-                    p.getIsPublic()
+                    p.getIsPublic(),
+                    true // 좋아요한 목록이므로 항상 true
                 );
             })
             .collect(Collectors.toList());
     }
 
+    /**
+     * 내 댓글 리스트 조회
+     */
     public List<UserCommentDto> getUserComments(String userId, int offset, int limit) {
         int page = offset / limit;
         return userCommentRepository

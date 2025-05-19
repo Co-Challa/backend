@@ -10,6 +10,7 @@ import com.cochalla.cochalla.dto.UserInfoDto;
 import com.cochalla.cochalla.dto.UserPostDto;
 import com.cochalla.cochalla.service.UserService;
 
+@CrossOrigin(origins = "http://localhost:5173")
 @RestController
 @RequestMapping("/user")
 public class UserController {
