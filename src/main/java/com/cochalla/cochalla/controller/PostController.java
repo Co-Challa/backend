@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.cochalla.cochalla.dto.PostPageDto;
+import com.cochalla.cochalla.service.CommentServiceImpl;
 import com.cochalla.cochalla.service.PostServiceImpl;
 
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,13 +26,15 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 
 @Controller
-@RequestMapping("/post")
 public class PostController {
 
     @Autowired
     PostServiceImpl postService;
 
-    @GetMapping("/{postId}")
+    @Autowired
+    CommentServiceImpl commentService;
+
+    @GetMapping("/post/{postId}")
     public ResponseEntity<PostPageDto> getPost(@PathVariable Integer postId) {
         PostPageDto response = null;
         try {
@@ -42,7 +45,7 @@ public class PostController {
         }
     }
     
-    @DeleteMapping("/{postId}")
+    @DeleteMapping("/post/{postId}")
     public ResponseEntity<?> deletePost(
         @PathVariable Integer postId,
         @AuthenticationPrincipal UserDetails userDetails
@@ -51,13 +54,14 @@ public class PostController {
             String userId = userDetails.getUsername();
 
             postService.delete(postId, userId);
+
             return ResponseEntity.ok().build();
         } catch (Exception e) {
             return ResponseEntity.notFound().build();
         }
     }
 
-    @PatchMapping("/{postId}")
+    @PatchMapping("/post/{postId}")
     public ResponseEntity<?> patchPost(
         @PathVariable Integer postId, 
         @RequestBody Boolean isPublic,
@@ -65,26 +69,16 @@ public class PostController {
     ) {
         try {
             String userId = userDetails.getUsername();
+
             postService.setPublicState(postId, userId, isPublic);
+
             return ResponseEntity.ok().build();
         } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().build();
         }
     }
 
-    @PostMapping("/{postId}/comment")
-    @ResponseBody
-    public String postComment(@PathVariable Integer postId, @RequestBody String comment) {
-        return "postComment";
-    }
-
-    @DeleteMapping("/{postId}/comment/{commentId}")
-    @ResponseBody
-    public String deleteComment(@PathVariable Integer postId, @PathVariable Integer commentId) {
-        return "deleteComment";
-    }
-
-    @PostMapping("/{postId}/like")
+    @PostMapping("/like/{postId}")
     @ResponseBody
     public String postLike(@PathVariable Integer postId, @RequestBody Boolean isLike) {
         return "postLike";
