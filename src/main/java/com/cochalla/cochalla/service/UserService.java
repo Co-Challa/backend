@@ -100,7 +100,7 @@ public class UserService {
             .stream()
             .map(c -> new UserCommentDto(
                 c.getPost().getPostId(),
-                c.getUser().getNickname(),
+                c.getPost().getUser().getNickname(), 
                 c.getPost().getSummary().getTitle(),
                 c.getPostCommentId(),
                 c.getContent(),
