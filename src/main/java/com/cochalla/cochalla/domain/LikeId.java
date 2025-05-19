@@ -3,9 +3,19 @@ package com.cochalla.cochalla.domain;
 import java.io.Serializable;
 import java.util.Objects;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Embeddable;
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
+@Embeddable
 public class LikeId implements Serializable {
-    private Integer post;
-    private String user;
+    private Integer postId;
+
+    @Column(name = "user_id", length = 20)
+    private String userId;
 
     @Override
     public boolean equals(Object o) {
@@ -14,11 +24,11 @@ public class LikeId implements Serializable {
         if (!(o instanceof LikeId))
             return false;
         LikeId likeId = (LikeId) o;
-        return Objects.equals(post, likeId.post) && Objects.equals(user, likeId.user);
+        return Objects.equals(postId, likeId.postId) && Objects.equals(userId, likeId.userId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(post, user);
+        return Objects.hash(postId, userId);
     }
 }
