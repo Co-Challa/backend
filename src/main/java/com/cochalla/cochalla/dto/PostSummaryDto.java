@@ -27,3 +27,4 @@ public class PostSummaryDto {
     private Long commentsCount;
 
 }
+

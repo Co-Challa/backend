@@ -9,18 +9,18 @@ import org.springframework.stereotype.Service;
 
 import com.cochalla.cochalla.domain.Post;
 import com.cochalla.cochalla.dto.PostSummaryDto;
-import com.cochalla.cochalla.repository.PostRepository;
+import com.cochalla.cochalla.repository.MainPostRepository;
 
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class PostServiceImpl implements PostService {
-    private final PostRepository postRepository;
+public class MainPostServiceImpl implements MainPostService {
+    private final MainPostRepository mainpostRepository;
 
     @Override
     public List<PostSummaryDto> getAllPostSummaries() {
-        List<Post> posts = postRepository.findAll();
+        List<Post> posts = mainpostRepository.findAll();
 
         return posts.stream()
                 .map(post -> {

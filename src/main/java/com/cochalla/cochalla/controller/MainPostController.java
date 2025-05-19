@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.cochalla.cochalla.dto.PostSummaryDto;
-import com.cochalla.cochalla.service.PostService;
+import com.cochalla.cochalla.service.MainPostService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -16,12 +16,12 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/post")
 @RequiredArgsConstructor
 
-public class PostController {
-    private final PostService postService;
+public class MainPostController {
+    private final MainPostService mainpostService;
 
     @GetMapping("/list")
     public List<PostSummaryDto> getAllposts(){
-        return postService.getAllPostSummaries();
+        return mainpostService.getAllPostSummaries();
     }
 
     
