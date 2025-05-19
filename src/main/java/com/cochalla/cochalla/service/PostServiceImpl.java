@@ -5,7 +5,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.cochalla.cochalla.domain.Post;
@@ -21,7 +20,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public List<PostSummaryDto> getAllPostSummaries() {
-        List<Post> posts = postRepository.findAll(Sort.by(Sort.Direction.DESC, "createdAt"));
+        List<Post> posts = postRepository.findAll();
 
         return posts.stream()
                 .map(post -> {
