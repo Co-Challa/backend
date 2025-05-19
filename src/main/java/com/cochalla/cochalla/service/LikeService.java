@@ -1,5 +1,5 @@
 package com.cochalla.cochalla.service;
 
 public interface LikeService {
-    Boolean toggleLike();
+    void setLikeState(Integer postId, String userId, Boolean likeState);
 }
