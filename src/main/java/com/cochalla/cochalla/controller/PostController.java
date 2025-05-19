@@ -5,6 +5,9 @@ import java.util.NoSuchElementException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.ResponseEntity.BodyBuilder;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -40,11 +43,14 @@ public class PostController {
     }
     
     @DeleteMapping("/{postId}")
-    public ResponseEntity<?> deletePost(@PathVariable Integer postId) {
+    public ResponseEntity<?> deletePost(
+        @PathVariable Integer postId,
+        @AuthenticationPrincipal UserDetails userDetails
+    ) {
         try {
-            // require Checking Owner feature
-            
-            postService.delete(postId);
+            String userId = userDetails.getUsername();
+
+            postService.delete(postId, userId);
             return ResponseEntity.ok().build();
         } catch (Exception e) {
             return ResponseEntity.notFound().build();
@@ -52,11 +58,14 @@ public class PostController {
     }
 
     @PatchMapping("/{postId}")
-    public ResponseEntity<?> patchPost(@PathVariable Integer postId, @RequestBody Boolean isPublic) {
+    public ResponseEntity<?> patchPost(
+        @PathVariable Integer postId, 
+        @RequestBody Boolean isPublic,
+        @AuthenticationPrincipal UserDetails userDetails
+    ) {
         try {
-            // require Checking Owner feature
-
-            postService.setPublicState(postId, isPublic);
+            String userId = userDetails.getUsername();
+            postService.setPublicState(postId, userId, isPublic);
             return ResponseEntity.ok().build();
         } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().build();

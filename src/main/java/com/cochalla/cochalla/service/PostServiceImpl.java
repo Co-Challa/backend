@@ -43,18 +43,18 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public void delete(Integer postId) {
-        if (!postRepository.existsById(postId))
-            throw new NoSuchElementException(postId + "번 게시물을 찾을 수 없습니다.");
+    public void delete(Integer postId, String userId) {
+        if (!postRepository.existsByPostIdAndUser_userId(postId, userId))
+            throw new NoSuchElementException(postId + "번 게시물의 삭제 권한이 없거나 존재하지 않습니다.");
 
         postRepository.deleteById(postId);
     }
 
     @Override
     @Transactional
-    public void setPublicState(Integer postId, Boolean isPublic) {
-        Optional<Post> optPost = postRepository.findById(postId);
-        Post post = optPost.orElseThrow(() -> new NoSuchElementException(postId + "번 게시물을 찾을 수 없습니다."));
+    public void setPublicState(Integer postId, String userId, Boolean isPublic) {
+        Optional<Post> optPost = postRepository.findByPostIdAndUser_userId(postId, userId);
+        Post post = optPost.orElseThrow(() -> new NoSuchElementException(postId + "번 게시물의 수정 권한이 없거나 게시물이 존재하지 않습니다."));
 
         post.setIsPublic(isPublic);
 
