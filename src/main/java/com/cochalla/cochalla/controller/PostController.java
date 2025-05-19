@@ -4,9 +4,7 @@ import java.util.NoSuchElementException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.ResponseEntity.BodyBuilder;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -14,11 +12,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.cochalla.cochalla.dto.PostPageDto;
-import com.cochalla.cochalla.service.CommentServiceImpl;
+import com.cochalla.cochalla.service.LikeServiceImpl;
 import com.cochalla.cochalla.service.PostServiceImpl;
 
 import org.springframework.web.bind.annotation.PostMapping;
@@ -32,7 +29,7 @@ public class PostController {
     PostServiceImpl postService;
 
     @Autowired
-    CommentServiceImpl commentService;
+    LikeServiceImpl likeService;
 
     @GetMapping("/post/{postId}")
     public ResponseEntity<PostPageDto> getPost(@PathVariable Integer postId) {
@@ -80,8 +77,20 @@ public class PostController {
 
     @PostMapping("/like/{postId}")
     @ResponseBody
-    public String postLike(@PathVariable Integer postId, @RequestBody Boolean isLike) {
-        return "postLike";
+    public ResponseEntity<?> postLike(
+        @PathVariable Integer postId,
+        @RequestBody Boolean isLike,
+        @AuthenticationPrincipal UserDetails userDetails
+    ) {
+        try {
+            String userId = userDetails.getUsername();
+
+            likeService.setLikeState(postId, userId, isLike);
+
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
     
 }
