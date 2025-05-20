@@ -17,6 +17,7 @@ import com.cochalla.cochalla.domain.Comment;
 import com.cochalla.cochalla.domain.Post;
 import com.cochalla.cochalla.domain.User;
 import com.cochalla.cochalla.dto.CommentDto;
+import com.cochalla.cochalla.dto.CommentResponseDto;
 import com.cochalla.cochalla.repository.CommentRepository;
 import com.cochalla.cochalla.repository.PostRepository;
 import com.cochalla.cochalla.repository.UserRepository;
@@ -34,17 +35,46 @@ public class CommentServiceImpl implements CommentService {
     CommentRepository commentRepository;
 
     @Override
-    public List<CommentDto> getUserCommentList(String userId) {
+    public CommentResponseDto getPostCommentList(Integer postId, Integer page, Integer size) {
+        if (!postRepository.existsById(postId))
+            throw new NoSuchElementException(postId + "번 게시물이 존재하지 않습니다.");
+
+        Sort sort = Sort.by(Direction.DESC, "createdAt");
+        Pageable pageable = PageRequest.of(page, size, sort);
+
+        Page<CommentDto> commentPage = commentRepository.findCommentsByPostId(postId, pageable);
+
+        CommentResponseDto commentResponseDto = new CommentResponseDto();
+        commentResponseDto.setContent(commentPage.toList());
+        commentResponseDto.setPage(commentPage.getNumber());
+        commentResponseDto.setSize(commentPage.getSize());
+        commentResponseDto.setTotalPages(commentPage.getTotalPages());
+        commentResponseDto.setTotalElements(commentPage.getTotalElements());
+        commentResponseDto.setIsLast(commentPage.isLast());
+
+        return commentResponseDto;
+    }
+
+    @Override
+    public CommentResponseDto getUserCommentList(String userId, Integer page, Integer size) {
 
         if (!userRepository.existsById(userId))
             throw new NoSuchElementException(userId + " 사용자가 존재하지 않습니다.");
 
-        Sort sort = Sort.by(Direction.ASC, "createdAt");
-        Pageable pageable = PageRequest.of(0, 5, sort);
+        Sort sort = Sort.by(Direction.DESC, "createdAt");
+        Pageable pageable = PageRequest.of(page, size, sort);
 
-        Page<CommentDto> comments = commentRepository.findCommentsByUserId(userId, pageable);
+        Page<CommentDto> commentPage = commentRepository.findCommentsByUserId(userId, pageable);
 
-        return comments.toList();
+        CommentResponseDto commentResponseDto = new CommentResponseDto();
+        commentResponseDto.setContent(commentPage.toList());
+        commentResponseDto.setPage(commentPage.getNumber());
+        commentResponseDto.setSize(commentPage.getSize());
+        commentResponseDto.setTotalPages(commentPage.getTotalPages());
+        commentResponseDto.setTotalElements(commentPage.getTotalElements());
+        commentResponseDto.setIsLast(commentPage.isLast());
+
+        return commentResponseDto;
     }
     
     @Override

@@ -58,6 +58,21 @@ public class CommentController {
             return ResponseEntity.badRequest().build();
         }
     }
+
+    @GetMapping("/comment/list")
+    public ResponseEntity<?> getMethodName(
+        @RequestParam Integer postId,
+        @RequestParam(defaultValue = "0") Integer page,
+        @RequestParam(defaultValue = "10") Integer size
+    ) {
+        try {
+            CommentResponseDto commentList = commentService.getPostCommentList(postId, page, size);
+
+            return ResponseEntity.ok(commentList);
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
     
 
     @PostMapping("/comment/{postId}")

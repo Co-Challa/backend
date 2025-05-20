@@ -3,8 +3,10 @@ package com.cochalla.cochalla.dto;
 import java.time.LocalDateTime;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 
 @AllArgsConstructor
+@Getter
 public class CommentDto {
 
     // Comment
@@ -16,16 +18,4 @@ public class CommentDto {
     String userId;
     String nickname;
     Integer profileImg;
-
-    @Override
-    public String toString() {
-        return "\tCommentId = " + commentId
-            + "\n\tUserId = " + userId
-            + "\n\tNickname = " + nickname
-            + "\n\tProfile = " + profileImg
-            + "\n\tContent = " + content
-            + "\n\tCreated = " + createdAt;
-    }
-
-    
 }

@@ -25,5 +25,7 @@ public interface CommentRepository extends JpaRepository<Comment, Integer>{
     """)
     Page<CommentDto> findCommentsByUserId(@Param("userId") String userId, Pageable pageable);
 
+    Long countByPost_postId(Integer postId);
+
     Boolean existsByPostCommentIdAndUser_userId(Integer commentId, String userId);
 }
