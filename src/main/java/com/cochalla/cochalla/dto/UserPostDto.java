@@ -1,11 +1,14 @@
 package com.cochalla.cochalla.dto;
 
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import java.time.LocalDateTime;
 
 @Getter
 @AllArgsConstructor
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class UserPostDto {
     private Integer postId;
     private String title;
@@ -14,5 +17,5 @@ public class UserPostDto {
     private Integer commentCnt;
     private Integer likeCnt;
     private Boolean isPublic;
-     private Boolean liked;
+    private Boolean liked;
 }

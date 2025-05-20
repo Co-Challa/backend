@@ -31,4 +31,8 @@ public class User {
 
     @Column(nullable = false)
     private LocalDateTime createdAt;
+
+    public void setNickname(String nickname) { this.nickname = nickname; }
+    public void setProfileImg(Integer profileImg) { this.profileImg = profileImg; }
+    public void setResTime(Integer resTime) { this.resTime = resTime; }
 }
