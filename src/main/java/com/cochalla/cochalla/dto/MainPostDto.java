@@ -15,7 +15,7 @@ import lombok.*;
 public class MainPostDto {
     private Integer postId;
     private String title;
-    private String summary;
+    private String content;
 
     private String userId;
     private String nickname;

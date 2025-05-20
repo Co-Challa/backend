@@ -1,7 +1,6 @@
 package com.cochalla.cochalla.service;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,14 +27,9 @@ public class MainPostServiceImpl implements MainPostService {
                     String nickname = post.getUser() != null ? post.getUser().getNickname() : "";
                     String userImageUrl = post.getUser() != null ? getUserImageUrl(post.getUser().getProfileImg()) : "";
 
-                    LocalDateTime createdAt = post.getSummary() != null ? post.getSummary().getCreatedAt() : null;
                     String title = post.getSummary() != null ? post.getSummary().getTitle() : "";
-                    String content = post.getSummary() != null && post.getSummary().getContent() != null
-                            ? post.getSummary().getContent()
-                            : "";
-
-                    //react에서 요약하도록 전체 content 전달
-                    String summary = content;
+                    String content = post.getSummary() != null ? post.getSummary().getContent() : "";
+                    LocalDateTime createdAt = post.getSummary() != null ? post.getSummary().getCreatedAt() : null;
 
                     // 좋아요/댓글 개수 안전하게 체크
                     long likesCount = post.getLikes() != null ? post.getLikes().size() : 0L;
@@ -44,7 +38,7 @@ public class MainPostServiceImpl implements MainPostService {
                     return MainPostDto.builder()
                             .postId(post.getPostId())
                             .title(title)
-                            .summary(summary)
+                            .content(content)
                             .userId(userId)
                             .nickname(nickname)
                             .userImageUrl(userImageUrl)
