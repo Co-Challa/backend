@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.cochalla.cochalla.dto.CommentDto;
+import com.cochalla.cochalla.dto.CommentRequestDto;
+import com.cochalla.cochalla.dto.CommentResponseDto;
 import com.cochalla.cochalla.service.CommentServiceImpl;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -26,9 +28,13 @@ public class CommentController {
     CommentServiceImpl commentService;
 
     @GetMapping("/comment/{userId}")
-    public ResponseEntity<?> getUserComments(@PathVariable String userId) {
+    public ResponseEntity<?> getUserComments(
+        @PathVariable String userId,
+        @RequestParam(defaultValue = "0") Integer page,
+        @RequestParam(defaultValue = "10") Integer size
+    ) {
         try {
-            List<CommentDto> commentList = commentService.getUserCommentList(userId);
+            CommentResponseDto commentList = commentService.getUserCommentList(userId, page, size);
 
             return ResponseEntity.ok().body(commentList);
         } catch (Exception e) {
@@ -37,30 +43,33 @@ public class CommentController {
     }
     
     @GetMapping("/my-comments")
-    public ResponseEntity<?> getmyComments(@AuthenticationPrincipal UserDetails userDetails) {
+    public ResponseEntity<?> getmyComments(
+        @RequestParam(defaultValue = "0") Integer page,
+        @RequestParam(defaultValue = "10") Integer size,
+        @AuthenticationPrincipal UserDetails userDetails
+    ) {
         try {
             String userId = userDetails.getUsername();
 
-            List<CommentDto> commentList = commentService.getUserCommentList(userId);
+            CommentResponseDto commentList = commentService.getUserCommentList(userId, page, size);
 
             return ResponseEntity.ok().body(commentList);
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
         }
     }
-
+    
 
     @PostMapping("/comment/{postId}")
-    @ResponseBody
     public ResponseEntity<?> postComment(
         @PathVariable Integer postId, 
-        @RequestBody String comment,
+        @RequestBody CommentRequestDto commentRequestDto,
         @AuthenticationPrincipal UserDetails userDetails
     ) {
         try {
             String userId = userDetails.getUsername();
 
-            commentService.create(postId, userId, comment);
+            commentService.create(postId, userId, commentRequestDto.getComment());
 
             return ResponseEntity.created(null).build();
         } catch (Exception e) {
@@ -69,7 +78,6 @@ public class CommentController {
     }
 
     @DeleteMapping("comment/{commentId}")
-    @ResponseBody
     public ResponseEntity<?> deleteComment(
         @PathVariable Integer commentId,
         @AuthenticationPrincipal UserDetails userDetails
