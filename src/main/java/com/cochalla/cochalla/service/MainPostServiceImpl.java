@@ -25,7 +25,7 @@ public class MainPostServiceImpl implements MainPostService {
                 .map(post -> {
                     String userId = post.getUser() != null ? post.getUser().getUserId() : "";
                     String nickname = post.getUser() != null ? post.getUser().getNickname() : "";
-                    String userImageUrl = post.getUser() != null ? getUserImageUrl(post.getUser().getProfileImg()) : "";
+                    String userImage = post.getUser() != null ? getUserImageUrl(post.getUser().getProfileImg()) : "";
 
                     String title = post.getSummary() != null ? post.getSummary().getTitle() : "";
                     String content = post.getSummary() != null ? post.getSummary().getContent() : "";
@@ -41,7 +41,7 @@ public class MainPostServiceImpl implements MainPostService {
                             .content(content)
                             .userId(userId)
                             .nickname(nickname)
-                            .userImageUrl(userImageUrl)
+                            .userImage(userImage)
                             .createdAt(createdAt)
                             .likesCount(likesCount)
                             .commentsCount(commentsCount)

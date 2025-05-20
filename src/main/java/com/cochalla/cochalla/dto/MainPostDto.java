@@ -19,7 +19,7 @@ public class MainPostDto {
 
     private String userId;
     private String nickname;
-    private String userImageUrl;
+    private String userImage;
 
     private LocalDateTime createdAt; 
     
