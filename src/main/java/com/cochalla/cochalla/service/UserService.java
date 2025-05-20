@@ -1,101 +1,53 @@
 package com.cochalla.cochalla.service;
 
-import com.cochalla.cochalla.dto.*;
-import com.cochalla.cochalla.domain.Post;
-import com.cochalla.cochalla.domain.User;
-import com.cochalla.cochalla.repository.*;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import java.util.List;
-import java.util.stream.Collectors;
+
+import com.cochalla.cochalla.dto.LoginRequestDto;
+import com.cochalla.cochalla.dto.SignupRequestDto;
+import com.cochalla.cochalla.domain.User;
+import com.cochalla.cochalla.repository.UserRepository;
+import com.cochalla.cochalla.security.JwtUtil;
+
+import lombok.RequiredArgsConstructor;
 
 @Service
+@RequiredArgsConstructor
 public class UserService {
+    private final UserRepository user_repository;
+    private final PasswordEncoder password_encoder;
+    private final JwtUtil jwtUtil;
 
-    @Autowired
-    private UserRepository userRepository;
+    public void signup(SignupRequestDto request){
+        if (user_repository.existsByUserId(request.getUserId())){
+            throw new IllegalArgumentException("이미 사용 중인 아이디입니다.");
+        }
 
-    @Autowired
-    private UserPostRepository userPostRepository;
+        if (user_repository.existsByNickname(request.getNickname())){
+            throw new IllegalArgumentException("이미 사용 중인 닉네임입니다.");
+        }
 
-    @Autowired
-    private UserLikedRepository userLikedRepository;
+        String encoded_password = password_encoder.encode(request.getPassword());
 
-    @Autowired
-    private UserCommentRepository userCommentRepository;
+        User user = User.builder()
+        .userId(request.getUserId())
+        .nickname(request.getNickname())
+        .password(encoded_password)
+        .profileImg(request.getProfileImg())
+        .resTime(request.getResTime())
+        .build();
 
-    public UserInfoDto getUserInfo(String userId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found: " + userId));
-        return new UserInfoDto(
-                user.getUserId(),
-                user.getNickname(),
-                user.getProfileImg(),
-                user.getResTime());
+        user_repository.save(user);
     }
 
-    public List<UserPostDto> getUserPosts(String userId, int offset, int limit) {
-        int page = offset / limit;
-        return userPostRepository
-                .findByUserUserId(userId, PageRequest.of(page, limit))
-                .stream()
-                .map(p -> new UserPostDto(
-                        p.getPostId(),
-                        p.getSummary().getTitle(),
-                        p.getSummary().getContent(),
-                        p.getSummary().getCreatedAt(),
-                        p.getComments().size(),
-                        p.getLikes().size(),
-                        p.getIsPublic(),
-                        userLikedRepository.existsByUserUserIdAndPostPostId(userId, p.getPostId())
-                ))
-                .collect(Collectors.toList());
-    }
+    public String login(LoginRequestDto requestDto){
+        User user = user_repository.findById(requestDto.getUserId())
+        .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
 
-    public List<UserPostDto> getLikedPosts(String userId, int offset, int limit) {
-        int page = offset / limit;
-        return userLikedRepository
-                .findByUserUserId(userId, PageRequest.of(page, limit))
-                .stream()
-                .map(likeEntry -> {
-                    Post p = likeEntry.getPost();
-                    return new UserPostDto(
-                            p.getPostId(),
-                            p.getSummary().getTitle(),
-                            p.getSummary().getContent(),
-                            p.getSummary().getCreatedAt(),
-                            p.getComments().size(),
-                            p.getLikes().size(),
-                            p.getIsPublic(),
-                            true
-                    );
-                })
-                .collect(Collectors.toList());
-    }
+        if (!password_encoder.matches(requestDto.getPassword(), user.getPassword())){
+            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+        }
 
-    public List<UserCommentDto> getUserComments(String userId, int offset, int limit) {
-        int page = offset / limit;
-        return userCommentRepository
-                .findByUserUserId(userId, PageRequest.of(page, limit))
-                .stream()
-                .map(c -> new UserCommentDto(
-                        c.getPost().getPostId(),
-                        c.getPost().getUser().getNickname(),
-                        c.getPost().getSummary().getTitle(),
-                        c.getPostCommentId(),
-                        c.getContent(),
-                        c.getCreatedAt()
-                ))
-                .collect(Collectors.toList());
-    }
-
-    public void updateUser(String userId, UserUpdateDto dto) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found: " + userId));
-        user.setNickname(dto.getNickname());
-        user.setProfileImg(dto.getProfileImg());
-        user.setResTime(dto.getResTime());
-        userRepository.save(user);
+        return jwtUtil.createToken(user.getUserId());
     }
 }

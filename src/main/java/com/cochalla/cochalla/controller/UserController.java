@@ -1,55 +1,33 @@
 package com.cochalla.cochalla.controller;
 
-import java.util.List;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import com.cochalla.cochalla.dto.*;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.cochalla.cochalla.dto.LoginRequestDto;
+import com.cochalla.cochalla.dto.SignupRequestDto;
 import com.cochalla.cochalla.service.UserService;
 
-@CrossOrigin(origins = "http://localhost:5173")
+import lombok.RequiredArgsConstructor;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+
 @RestController
-@RequestMapping("/user")
+@RequiredArgsConstructor
 public class UserController {
+    private final UserService user_service;
 
-    @Autowired
-    private UserService userService;
-
-    @GetMapping("/{user_id}")
-    public UserInfoDto getUserInfo(@PathVariable("user_id") String userId) {
-        return userService.getUserInfo(userId);
+    @PostMapping("/signup")
+    public ResponseEntity<String> signup(@RequestBody SignupRequestDto requestDto) {
+        user_service.signup(requestDto);
+        return ResponseEntity.ok("회원가입이 완료되었습니다.");
     }
 
-    @GetMapping("/list/{user_id}")
-    public List<UserPostDto> getUserPosts(
-            @PathVariable("user_id") String userId,
-            @RequestParam int offset,
-            @RequestParam int limit) {
-        return userService.getUserPosts(userId, offset, limit);
-    }
-
-    @GetMapping("/liked/{user_id}")
-    public List<UserPostDto> getLikedPosts(
-            @PathVariable("user_id") String userId,
-            @RequestParam int offset,
-            @RequestParam int limit) {
-        return userService.getLikedPosts(userId, offset, limit);
-    }
-
-    @GetMapping("/comment/{user_id}")
-    public List<UserCommentDto> getUserComments(
-            @PathVariable("user_id") String userId,
-            @RequestParam int offset,
-            @RequestParam int limit) {
-        return userService.getUserComments(userId, offset, limit);
-    }
-
-    @PostMapping("/update/{user_id}")
-    public ResponseEntity<Void> updateUserInfo(
-        @PathVariable("user_id") String userId,
-        @RequestBody UserUpdateDto dto
-    ) {
-        userService.updateUser(userId, dto);
-        return ResponseEntity.noContent().build();
+    @PostMapping("/signin")
+    public ResponseEntity<String> login(@RequestBody LoginRequestDto requestDto) {
+        String token = user_service.login(requestDto);
+        return ResponseEntity.ok()
+        .header("Authorization", "Bearer " + token)
+        .body("로그인 성공");
     }
 }
