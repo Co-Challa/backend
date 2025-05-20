@@ -47,4 +47,8 @@ public class User {
     public void markSummaryAsDone() {
         this.lastSummaryDate = LocalDate.now();
     }
+
+    public void setNickname(String nickname) { this.nickname = nickname; }
+    public void setProfileImg(Integer profileImg) { this.profileImg = profileImg; }
+    public void setResTime(Integer resTime) { this.resTime = resTime; }
 }
