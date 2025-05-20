@@ -86,15 +86,17 @@ public class PostController {
     @ResponseBody
     public ResponseEntity<?> postLike(
         @PathVariable Integer postId,
-        @RequestBody Boolean isLike,
+        @RequestBody PostRequestDto postRequestDto,
         @AuthenticationPrincipal UserDetails userDetails
     ) {
         try {
             String userId = userDetails.getUsername();
 
-            likeService.setLikeState(postId, userId, isLike);
+            likeService.setLikeState(postId, userId, postRequestDto.getIsLike());
 
-            return ResponseEntity.ok().build();
+            Long totalLikeCount = likeService.getTotalLikeCount(postId);
+
+            return ResponseEntity.ok(totalLikeCount);
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
         }
