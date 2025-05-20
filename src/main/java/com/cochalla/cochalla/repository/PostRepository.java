@@ -7,15 +7,28 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import com.cochalla.cochalla.domain.Post;
-import com.cochalla.cochalla.dto.PostDto;
+import com.cochalla.cochalla.dto.PostResponseDto;
 
+public interface PostRepository extends JpaRepository<Post, Integer> {
 
-public interface PostRepository extends JpaRepository<Post, Integer>{
-    @Query("SELECT new com.cochalla.cochalla.dto.PostDto(" +
-           "p.postId, p.isPublic, s.title, s.content, s.createdAt, " +
-           "u.userId, u.nickname, u.profileImg, SIZE(p.likes), SIZE(p.comments)) " +
-           "FROM Post p JOIN p.summary s JOIN p.user u WHERE p.postId = :postId")
-    Optional<PostDto> findPostById(@Param("postId") Integer postId);
+    @Query("""
+            SELECT new com.cochalla.cochalla.dto.PostResponseDto(
+                p.postId, p.isPublic,
+                s.title, s.content, s.createdAt,
+                u.userId, u.nickname, u.profileImg,
+                CASE WHEN COUNT(l.id) > 0 THEN TRUE ELSE FALSE END,
+                COUNT(allLikes.post.postId),
+                CAST(SIZE(p.comments) AS int)
+            )
+            FROM Post p
+            JOIN p.summary s
+            JOIN p.user u
+            LEFT JOIN p.likes l ON l.post.postId = p.postId AND l.user.userId = :loggedInUserId
+            LEFT JOIN p.likes allLikes
+            WHERE p.postId = :postId
+            GROUP BY p.postId, p.isPublic, s.title, s.content, s.createdAt, u.userId, u.nickname, u.profileImg
+        """)
+    Optional<PostResponseDto> findPostResponseDtoById(@Param("postId") Integer postId, @Param("loggedInUserId") String loggedInUserId);
 
     Optional<Post> findByPostIdAndUser_userId(Integer postId, String userId);
 

@@ -14,7 +14,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.cochalla.cochalla.dto.PostPageDto;
+import com.cochalla.cochalla.dto.PostResponseDto;
+import com.cochalla.cochalla.dto.PostRequestDto;
 import com.cochalla.cochalla.service.LikeServiceImpl;
 import com.cochalla.cochalla.service.PostServiceImpl;
 
@@ -32,10 +33,16 @@ public class PostController {
     LikeServiceImpl likeService;
 
     @GetMapping("/post/{postId}")
-    public ResponseEntity<PostPageDto> getPost(@PathVariable Integer postId) {
-        PostPageDto response = null;
+    public ResponseEntity<PostResponseDto> getPost(
+        @PathVariable Integer postId,
+        @AuthenticationPrincipal UserDetails userDetails        
+    ) {
+        PostResponseDto response = null;
         try {
-            response = postService.get(postId);
+            String userId = userDetails.getUsername();
+
+            response = postService.get(postId, userId);
+
             return ResponseEntity.ok(response);
         } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().build();
@@ -61,13 +68,13 @@ public class PostController {
     @PatchMapping("/post/{postId}")
     public ResponseEntity<?> patchPost(
         @PathVariable Integer postId, 
-        @RequestBody Boolean isPublic,
+        @RequestBody PostRequestDto postRequestDto, 
         @AuthenticationPrincipal UserDetails userDetails
     ) {
         try {
             String userId = userDetails.getUsername();
 
-            postService.setPublicState(postId, userId, isPublic);
+            postService.setPublicState(postId, userId, postRequestDto.getIsPublic());
 
             return ResponseEntity.ok().build();
         } catch (NoSuchElementException e) {

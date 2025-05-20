@@ -4,18 +4,12 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
 import com.cochalla.cochalla.domain.Post;
-import com.cochalla.cochalla.dto.CommentDto;
-import com.cochalla.cochalla.dto.PostDto;
-import com.cochalla.cochalla.dto.PostPageDto;
+import com.cochalla.cochalla.dto.PostResponseDto;
 import com.cochalla.cochalla.repository.CommentRepository;
+import com.cochalla.cochalla.repository.LikeRepository;
 import com.cochalla.cochalla.repository.PostRepository;
 
 import jakarta.transaction.Transactional;
@@ -25,21 +19,19 @@ public class PostServiceImpl implements PostService {
 
     @Autowired
     PostRepository postRepository;
-
+    
     @Autowired
     CommentRepository commentRepository;
 
+    @Autowired
+    LikeRepository likeRepository;
+
     @Override
-    public PostPageDto get(Integer postId) {
-        Optional<PostDto> optPost = postRepository.findPostById(postId);
-        PostDto postDto = optPost.orElseThrow(() -> new NoSuchElementException(postId + "번 게시물을 찾을 수 없습니다."));
+    public PostResponseDto get(Integer postId, String userId) {
+        PostResponseDto postResponseDto = postRepository.findPostResponseDtoById(postId, userId)
+                                    .orElseThrow(() -> new NoSuchElementException(postId + "번 게시물을 찾을 수 없습니다."));
 
-        Sort sort = Sort.by(Direction.DESC, "createdAt");
-		Pageable pageable = PageRequest.of(0, 1, sort);        
-        
-        Page<CommentDto> comments = commentRepository.findCommentsByPostId(postDto.getPostId(), pageable);
-
-        return new PostPageDto(postDto, comments.toList());
+        return postResponseDto;
     }
 
     @Override
