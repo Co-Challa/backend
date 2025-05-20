@@ -12,7 +12,7 @@ import lombok.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class PostSummaryDto {
+public class MainPostDto {
     private Integer postId;
     private String title;
     private String summary;

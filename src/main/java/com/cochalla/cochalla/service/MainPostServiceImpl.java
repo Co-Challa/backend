@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
 import com.cochalla.cochalla.domain.Post;
-import com.cochalla.cochalla.dto.PostSummaryDto;
+import com.cochalla.cochalla.dto.MainPostDto;
 import com.cochalla.cochalla.repository.PostRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -19,7 +19,7 @@ public class MainPostServiceImpl implements MainPostService {
     private final PostRepository postRepository;
 
     @Override
-    public List<PostSummaryDto> getAllPostSummaries() {
+    public List<MainPostDto> getAllPostSummaries() {
         List<Post> posts = postRepository.findAll();
 
         return posts.stream()
@@ -34,23 +34,21 @@ public class MainPostServiceImpl implements MainPostService {
                             ? post.getSummary().getContent()
                             : "";
 
-                    // 본문 5줄 요약
-                    String summary = Arrays.stream(content.split("\\r?\\n"))
-                            .limit(5)
-                            .collect(Collectors.joining("\n"));
+                    //react에서 요약하도록 전체 content 전달
+                    String summary = content;
 
                     // 좋아요/댓글 개수 안전하게 체크
                     long likesCount = post.getLikes() != null ? post.getLikes().size() : 0L;
                     long commentsCount = post.getComments() != null ? post.getComments().size() : 0L;
 
-                    return PostSummaryDto.builder()
+                    return MainPostDto.builder()
                             .postId(post.getPostId())
                             .title(title)
+                            .summary(summary)
                             .userId(userId)
                             .nickname(nickname)
                             .userImageUrl(userImageUrl)
                             .createdAt(createdAt)
-                            .summary(summary)
                             .likesCount(likesCount)
                             .commentsCount(commentsCount)
                             .build();
