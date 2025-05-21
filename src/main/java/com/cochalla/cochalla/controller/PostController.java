@@ -20,19 +20,17 @@ import com.cochalla.cochalla.service.PostServiceImpl;
 
 import org.springframework.web.bind.annotation.PostMapping;
 
-
-
 @Controller
 public class PostController {
-
     @Autowired
     PostServiceImpl postService;
-
     @Autowired
     LikeServiceImpl likeService;
 
     @GetMapping("/post/{postId}")
-    public ResponseEntity<PostPageDto> getPost(@PathVariable Integer postId) {
+    public ResponseEntity<PostPageDto> getPost(
+        @PathVariable Integer postId
+    ) {
         PostPageDto response = null;
         try {
             response = postService.get(postId);
@@ -49,7 +47,6 @@ public class PostController {
     ) {
         try {
             String userId = userDetails.getUsername();
-
             postService.delete(postId, userId);
 
             return ResponseEntity.ok().build();
