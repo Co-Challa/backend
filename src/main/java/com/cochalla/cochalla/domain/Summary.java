@@ -30,7 +30,6 @@ public class Summary {
     @Column(columnDefinition = "TEXT")
     private String title;
 
-    @Column(length = 255)
     @Lob
     @Column(columnDefinition = "TEXT")
     private String content;
@@ -38,9 +37,6 @@ public class Summary {
     @Column
     private LocalDateTime createdAt;
 
-    @Column
-    private Integer retryCount;
-}
     @PrePersist
     protected void onCreate() {
         this.createdAt = LocalDateTime.now();
@@ -59,5 +55,4 @@ public class Summary {
         this.title = dto.getTitle();
         this.content = dto.getContent();
     }
-
 }

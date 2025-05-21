@@ -1,7 +1,5 @@
 package com.cochalla.cochalla.repository;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-
 import com.cochalla.cochalla.domain.User;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -11,7 +9,6 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
-@Repository
 public interface UserRepository extends JpaRepository<User, String> {
     Optional<User> findByUserId(String userId);
     boolean existsByUserId(String userId);

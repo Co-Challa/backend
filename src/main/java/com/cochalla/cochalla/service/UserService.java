@@ -30,19 +30,19 @@ public class UserService {
         String encoded_password = password_encoder.encode(request.getPassword());
 
         User user = User.builder()
-                .userId(request.getUserId())
-                .nickname(request.getNickname())
-                .password(encoded_password)
-                .profileImg(request.getProfileImg())
-                .resTime(request.getResTime())
-                .build();
+        .userId(request.getUserId())
+        .nickname(request.getNickname())
+        .password(encoded_password)
+        .profileImg(request.getProfileImg())
+        .resTime(request.getResTime())
+        .build();
 
         user_repository.save(user);
     }
 
     public String login(LoginRequestDto requestDto){
         User user = user_repository.findById(requestDto.getUserId())
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
+        .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
 
         if (!password_encoder.matches(requestDto.getPassword(), user.getPassword())){
             throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");

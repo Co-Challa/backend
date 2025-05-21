@@ -9,13 +9,11 @@ import com.cochalla.cochalla.service.UserService;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
 @RequiredArgsConstructor
-@CrossOrigin(exposedHeaders = "Authorization")
 public class UserController {
     private final UserService user_service;
 
