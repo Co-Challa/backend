@@ -26,5 +26,8 @@ public class MainPostController {
         int offset = page * PAGE_SIZE; // ex) page=0 → 0, page=1 → 10
         return mainpostService.getPostSummariesByPage(offset, PAGE_SIZE);
     }
+    
+    //test용 api
+    
 
 }
