@@ -27,7 +27,6 @@ public class SummaryService {
     private final QuestionRepository questionRepository;
     private final SummaryRepository summaryRepository;
     private final RedisLockService redisLockService;
-    private final StringRedisTemplate redisTemplate;
     private final QaService qaService;
     private final SummaryStrategyRouter summaryStrategyRouter;
     private final SummaryStatusService summaryStatusService;
