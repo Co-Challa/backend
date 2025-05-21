@@ -13,20 +13,24 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
 
     @Query("""
             SELECT new com.cochalla.cochalla.dto.PostResponseDto(
-                p.postId, p.isPublic,
-                s.title, s.content, s.createdAt,
-                u.userId, u.nickname, u.profileImg,
-                null, COUNT(allLikes.post.postId), CAST(SIZE(p.comments) AS int)
-            )
-            FROM Post p
+                p.postId, p.isPublic, 
+                s.title, s.content, s.createdAt, 
+                u.userId, u.nickname, u.profileImg, 
+                (
+                    CASE WHEN :currentUserId IS NOT NULL AND EXISTS (
+                        SELECT lk FROM Like lk 
+                        WHERE lk.post.postId = p.postId AND lk.user.userId = :currentUserId
+                    ) THEN TRUE ELSE FALSE END
+                ), 
+                (SELECT COUNT(l) FROM Like l WHERE l.post.postId = p.postId), 
+                SIZE(p.comments)
+            ) 
+            FROM Post p 
             JOIN p.summary s
             JOIN p.user u
-            LEFT JOIN p.likes l ON l.post.postId = p.postId
-            LEFT JOIN p.likes allLikes
             WHERE p.postId = :postId
-            GROUP BY p.postId, p.isPublic, s.title, s.content, s.createdAt, u.userId, u.nickname, u.profileImg
         """)
-    Optional<PostResponseDto> findPostResponseDtoById(@Param("postId") Integer postId);
+    Optional<PostResponseDto> findPostResponseDto(@Param("postId") Integer postId, @Param("currentUserId") String currentUserId);
 
     Optional<Post> findByPostIdAndUser_userId(Integer postId, String userId);
 

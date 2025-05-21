@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.cochalla.cochalla.dto.PostResponseDto;
@@ -35,14 +36,10 @@ public class PostController {
     @GetMapping("/post/{postId}")
     public ResponseEntity<PostResponseDto> getPost(
         @PathVariable Integer postId,
-        @AuthenticationPrincipal UserDetails userDetails        
+        @RequestParam String userId        
     ) {
         PostResponseDto response = null;
         try {
-            String userId = "";
-            if (userDetails != null)
-                userId = userDetails.getUsername();
-
             response = postService.get(postId, userId);
 
             return ResponseEntity.ok(response);

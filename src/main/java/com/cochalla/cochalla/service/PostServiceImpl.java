@@ -31,21 +31,8 @@ public class PostServiceImpl implements PostService {
     @Override
     public PostResponseDto get(Integer postId, String userId) {
 
-        PostResponseDto postResponseDto = postRepository.findPostResponseDtoById(postId)
+        PostResponseDto postResponseDto = postRepository.findPostResponseDto(postId, userId)
                                     .orElseThrow(() -> new NoSuchElementException(postId + "번 게시물을 찾을 수 없습니다."));
-
-        if (userId.isEmpty()){
-            postResponseDto.setIsLike(false);
-        }
-        else {
-            LikeId likeId = new LikeId();
-            likeId.setPostId(postId);
-            likeId.setUserId(userId);
-
-            Boolean isLike = likeRepository.existsById(likeId);
-
-            postResponseDto.setIsLike(isLike);
-        }
 
         return postResponseDto;
     }
