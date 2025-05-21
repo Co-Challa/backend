@@ -1,21 +1,25 @@
 package com.cochalla.cochalla.domain;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.PrePersist;
+import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
-@Getter
 @Entity
+@Getter
+@Setter
 @Builder
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
+@Table(name = "user")
 public class User {
 
     @Id
@@ -34,15 +38,20 @@ public class User {
     @Column(nullable = false)
     private Integer resTime;
 
-    @Column(nullable = false, updatable = false)
+    @Column(nullable = false)
     private LocalDateTime createdAt;
+
+    @Column
+    private LocalDate lastSummaryDate;
+
+    @OneToMany(mappedBy = "user")
+    private List<Chat> chats = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user")
+    private List<Summary> summaries = new ArrayList<>();
 
     @PrePersist
     protected void onCreate() {
         this.createdAt = LocalDateTime.now();
     }
-
-    @Column
-    private LocalDateTime lastSummaryDate;
 }
-
