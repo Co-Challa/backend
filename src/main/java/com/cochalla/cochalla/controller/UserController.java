@@ -8,7 +8,6 @@ import com.cochalla.cochalla.service.UserService;
 
 import lombok.RequiredArgsConstructor;
 
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
