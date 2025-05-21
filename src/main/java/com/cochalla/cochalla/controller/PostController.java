@@ -39,7 +39,9 @@ public class PostController {
     ) {
         PostResponseDto response = null;
         try {
-            String userId = userDetails.getUsername();
+            String userId = "";
+            if (userDetails != null)
+                userId = userDetails.getUsername();
 
             response = postService.get(postId, userId);
 

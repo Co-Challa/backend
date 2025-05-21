@@ -16,19 +16,17 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
                 p.postId, p.isPublic,
                 s.title, s.content, s.createdAt,
                 u.userId, u.nickname, u.profileImg,
-                CASE WHEN COUNT(l.id) > 0 THEN TRUE ELSE FALSE END,
-                COUNT(allLikes.post.postId),
-                CAST(SIZE(p.comments) AS int)
+                null, COUNT(allLikes.post.postId), CAST(SIZE(p.comments) AS int)
             )
             FROM Post p
             JOIN p.summary s
             JOIN p.user u
-            LEFT JOIN p.likes l ON l.post.postId = p.postId AND l.user.userId = :loggedInUserId
+            LEFT JOIN p.likes l ON l.post.postId = p.postId
             LEFT JOIN p.likes allLikes
             WHERE p.postId = :postId
             GROUP BY p.postId, p.isPublic, s.title, s.content, s.createdAt, u.userId, u.nickname, u.profileImg
         """)
-    Optional<PostResponseDto> findPostResponseDtoById(@Param("postId") Integer postId, @Param("loggedInUserId") String loggedInUserId);
+    Optional<PostResponseDto> findPostResponseDtoById(@Param("postId") Integer postId);
 
     Optional<Post> findByPostIdAndUser_userId(Integer postId, String userId);
 
