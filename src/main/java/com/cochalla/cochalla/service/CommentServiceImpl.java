@@ -70,7 +70,7 @@ public class CommentServiceImpl implements CommentService {
     
     @Override
     @Transactional
-    public Comment create(Integer postId, String userId, String content) {
+    public Long create(Integer postId, String userId, String content) {
         if (!postRepository.existsById(postId))
             throw new NoSuchElementException(postId + "번 게시물이 존재하지 않습니다.");
 
@@ -86,15 +86,26 @@ public class CommentServiceImpl implements CommentService {
         newComment.setContent(content);
         newComment.setCreatedAt(LocalDateTime.now());
 
-        return commentRepository.save(newComment);
+        commentRepository.save(newComment);
+
+        return commentRepository.countByPost_postId(postId);
     }
 
     @Override
-    public void delete(Integer commentId, String userId) {
-        if (!commentRepository.existsByPostCommentIdAndUser_userId(commentId, userId))
-            throw new NoSuchElementException(commentId + "번 댓글의 삭제 권한이 없거나 존재하지 않습니다.");
+    public Long delete(Integer commentId, String userId) {
+        if (commentId == null)
+            throw new NoSuchElementException("commentId is NULL");
+
+        if (userId.isEmpty())
+            throw new NoSuchElementException("userId is EMPTY");
+
+        Integer postId = commentRepository.findPostIdByCommentIdAndUserId(commentId, userId);
+        if (postId == null)
+            throw new NoSuchElementException(userId + "님이 조회한 " + commentId + "번 댓글이 조회되지 않습니다.");
 
         commentRepository.deleteById(commentId);
+
+        return commentRepository.countByPost_postId(postId);
     }
     
 }

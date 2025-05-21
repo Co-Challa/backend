@@ -60,7 +60,7 @@ public class CommentController {
     }
 
     @GetMapping("/comment/list")
-    public ResponseEntity<?> getMethodName(
+    public ResponseEntity<?> getPostComments(
         @RequestParam Integer postId,
         @RequestParam Integer offset,
         @RequestParam Integer limit
@@ -84,9 +84,9 @@ public class CommentController {
         try {
             String userId = userDetails.getUsername();
 
-            commentService.create(postId, userId, commentRequestDto.getComment());
+            Long totalCommentCount = commentService.create(postId, userId, commentRequestDto.getComment());
 
-            return ResponseEntity.created(null).build();
+            return ResponseEntity.ok(totalCommentCount);
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
         }
@@ -100,9 +100,9 @@ public class CommentController {
         try {
             String userId = userDetails.getUsername();
 
-            commentService.delete(commentId, userId);
+            Long totalCommentCount = commentService.delete(commentId, userId);
 
-            return ResponseEntity.ok().build();
+            return ResponseEntity.ok(totalCommentCount);
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
         }
