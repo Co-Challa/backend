@@ -5,49 +5,66 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.cochalla.cochalla.dto.*;
+import com.cochalla.cochalla.security.CustomUserDetail;
 import com.cochalla.cochalla.service.MyPageService;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Controller;
 
-@CrossOrigin(origins = "http://localhost:5173")
-@RestController
+@Controller
 @RequestMapping("/user")
 public class MyPageController {
-
     @Autowired
     private MyPageService myPageService;
 
-    @GetMapping("/{user_id}")
-    public UserInfoDto getUserInfo(@PathVariable("user_id") String userId) {
-        return myPageService.getUserInfo(userId);
+    @GetMapping("/me")
+    public ResponseEntity<UserInfoDto> getUserInfo(
+        @AuthenticationPrincipal CustomUserDetail userDetails
+    ) {
+        String userId = userDetails.getUsername();
+        UserInfoDto dto = myPageService.getUserInfo(userId);
+        return ResponseEntity.ok(dto);
     }
 
-    @GetMapping("/list/{user_id}")
-    public List<UserPostDto> getUserPosts(
-            @PathVariable("user_id") String userId,
-            @RequestParam int offset,
-            @RequestParam int limit) {
-        return myPageService.getUserPosts(userId, offset, limit);
-    }
-
-    @GetMapping("/liked/{user_id}")
-    public List<UserLikeDto> getLikedPosts(
-        @PathVariable("user_id") String userId,
+    @GetMapping("/posts")
+    public ResponseEntity<List<UserPostDto>> getUserPosts(
+        @AuthenticationPrincipal CustomUserDetail userDetails,
         @RequestParam int offset,
-        @RequestParam int limit) {
-        return myPageService.getLikedPosts(userId, offset, limit);
+        @RequestParam int limit
+    ) {
+        String userId = userDetails.getUsername();
+        List<UserPostDto> list = myPageService.getUserPosts(userId, offset, limit);
+        return ResponseEntity.ok(list);
     }
 
-    @GetMapping("/comment/{user_id}")
-    public List<UserCommentDto> getUserComments(
-            @PathVariable("user_id") String userId,
-            @RequestParam int offset,
-            @RequestParam int limit) {
-        return myPageService.getUserComments(userId, offset, limit);
+    @GetMapping("/liked")
+    public ResponseEntity<List<UserLikeDto> > getLikedPosts(
+        @AuthenticationPrincipal CustomUserDetail userDetails,
+        @RequestParam int offset,
+        @RequestParam int limit
+    ) {
+        String userId = userDetails.getUsername();
+        List<UserLikeDto> list = myPageService.getLikedPosts(userId, offset, limit);
+        return ResponseEntity.ok(list);
     }
 
-    @PostMapping("/update/{user_id}")
+    @GetMapping("/comments")
+    public ResponseEntity<List<UserCommentDto>> getUserComments(
+        @AuthenticationPrincipal CustomUserDetail userDetails,
+        @RequestParam int offset,
+        @RequestParam int limit
+    ) {
+        String userId = userDetails.getUsername();
+        List<UserCommentDto> list = myPageService.getUserComments(userId, offset, limit);
+        return ResponseEntity.ok(list);
+    }
+
+    @PostMapping("/update")
     public ResponseEntity<Void> updateUserInfo(
-            @PathVariable("user_id") String userId,
-            @RequestBody UserUpdateDto dto) {
+        @AuthenticationPrincipal CustomUserDetail userDetails,
+        @RequestBody UserUpdateDto dto
+    ) {
+        String userId = userDetails.getUsername();
         myPageService.updateUser(userId, dto);
         return ResponseEntity.noContent().build();
     }
