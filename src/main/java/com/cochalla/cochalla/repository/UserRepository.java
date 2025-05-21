@@ -1,5 +1,7 @@
 package com.cochalla.cochalla.repository;
 
+import org.springframework.data.jpa.repository.JpaRepository;
+
 import com.cochalla.cochalla.domain.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
