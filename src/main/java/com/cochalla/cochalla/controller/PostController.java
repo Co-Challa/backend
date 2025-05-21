@@ -36,11 +36,10 @@ public class PostController {
     @GetMapping("/post/{postId}")
     public ResponseEntity<PostResponseDto> getPost(
         @PathVariable Integer postId,
-        @RequestParam String userId        
+        @RequestParam(required = false) String userId        
     ) {
-        PostResponseDto response = null;
         try {
-            response = postService.get(postId, userId);
+            PostResponseDto response = postService.get(postId, userId);
 
             return ResponseEntity.ok(response);
         } catch (NoSuchElementException e) {
