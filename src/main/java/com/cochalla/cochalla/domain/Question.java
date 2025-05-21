@@ -26,15 +26,23 @@ public class Question {
     @Column(length = 1500, nullable = false)
     private String question;
 
+    @OneToOne(mappedBy = "question", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Answer answer;
+
     @Column(nullable = false)
     private LocalDateTime createdAt;
-
-    @OneToOne(mappedBy = "question", fetch = FetchType.LAZY)
-    private Answer answer;
 
     @PrePersist
     public void prePersist() {
         this.createdAt = LocalDateTime.now();
+    }
+
+    public void setAnswer(Answer answer) {
+        this.answer = answer;
+
+        if (answer.getQuestion() != this) {
+            answer.setQuestion(this);
+        }
     }
 
     // == 생성 메서드 ==//

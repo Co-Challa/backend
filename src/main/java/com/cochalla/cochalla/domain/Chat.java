@@ -1,6 +1,9 @@
 package com.cochalla.cochalla.domain;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -21,6 +24,9 @@ public class Chat {
     private User user;
 
     private LocalDateTime createdAt;
+
+    @OneToMany(mappedBy = "chat", cascade = CascadeType.ALL)
+    private List<Question> questions = new ArrayList<>();
 
     // == 자동 생성 시간 설정 == //
     @PrePersist

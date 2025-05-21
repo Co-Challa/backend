@@ -17,12 +17,11 @@ public class Answer {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer answerId;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne
     @JoinColumn(name = "question_id", nullable = false)
     private Question question;
 
     @Lob
-    @Column(nullable = false, columnDefinition = "TEXT")
     private String answer;
 
     @Column
@@ -36,7 +35,9 @@ public class Answer {
     // == 연관관게 메서드 ==
     public void setQuestion(Question question) {
         this.question = question;
-        question.setAnswer(this);
+        if (question.getAnswer() != this) {
+            question.setAnswer(this);
+        }
     }
 
     // == 생성 메서드 ==//
