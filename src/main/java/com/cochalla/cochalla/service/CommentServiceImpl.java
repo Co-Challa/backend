@@ -16,7 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.cochalla.cochalla.domain.Comment;
 import com.cochalla.cochalla.domain.Post;
 import com.cochalla.cochalla.domain.User;
-import com.cochalla.cochalla.dto.CommentDto;
 import com.cochalla.cochalla.dto.CommentResponseDto;
 import com.cochalla.cochalla.repository.CommentRepository;
 import com.cochalla.cochalla.repository.PostRepository;
@@ -35,46 +34,38 @@ public class CommentServiceImpl implements CommentService {
     CommentRepository commentRepository;
 
     @Override
-    public CommentResponseDto getPostCommentList(Integer postId, Integer page, Integer size) {
+    public List<CommentResponseDto> getPostCommentList(Integer postId, Integer offset, Integer limit) {
         if (!postRepository.existsById(postId))
             throw new NoSuchElementException(postId + "번 게시물이 존재하지 않습니다.");
 
+        if (offset == null || limit == null) 
+            throw new NoSuchElementException("Pagination 처리 불가");
+
+        Integer page = offset / limit;
         Sort sort = Sort.by(Direction.DESC, "createdAt");
-        Pageable pageable = PageRequest.of(page, size, sort);
+        Pageable pageable = PageRequest.of(page, limit, sort);
 
-        Page<CommentDto> commentPage = commentRepository.findCommentsByPostId(postId, pageable);
+        Page<CommentResponseDto> commentPage = commentRepository.findCommentsByPostId(postId, pageable);
 
-        CommentResponseDto commentResponseDto = new CommentResponseDto();
-        commentResponseDto.setContent(commentPage.toList());
-        commentResponseDto.setPage(commentPage.getNumber());
-        commentResponseDto.setSize(commentPage.getSize());
-        commentResponseDto.setTotalPages(commentPage.getTotalPages());
-        commentResponseDto.setTotalElements(commentPage.getTotalElements());
-        commentResponseDto.setIsLast(commentPage.isLast());
-
-        return commentResponseDto;
+        return commentPage.toList();
     }
 
     @Override
-    public CommentResponseDto getUserCommentList(String userId, Integer page, Integer size) {
+    public List<CommentResponseDto> getUserCommentList(String userId, Integer offset, Integer limit) {
 
         if (!userRepository.existsById(userId))
             throw new NoSuchElementException(userId + " 사용자가 존재하지 않습니다.");
 
+        if (offset == null || limit == null) 
+            throw new NoSuchElementException("Pagination 처리 불가");
+
+        Integer page = offset / limit;
         Sort sort = Sort.by(Direction.DESC, "createdAt");
-        Pageable pageable = PageRequest.of(page, size, sort);
+        Pageable pageable = PageRequest.of(page, limit, sort);
 
-        Page<CommentDto> commentPage = commentRepository.findCommentsByUserId(userId, pageable);
-
-        CommentResponseDto commentResponseDto = new CommentResponseDto();
-        commentResponseDto.setContent(commentPage.toList());
-        commentResponseDto.setPage(commentPage.getNumber());
-        commentResponseDto.setSize(commentPage.getSize());
-        commentResponseDto.setTotalPages(commentPage.getTotalPages());
-        commentResponseDto.setTotalElements(commentPage.getTotalElements());
-        commentResponseDto.setIsLast(commentPage.isLast());
-
-        return commentResponseDto;
+        Page<CommentResponseDto> commentPage = commentRepository.findCommentsByUserId(userId, pageable);
+        
+        return commentPage.toList();
     }
     
     @Override

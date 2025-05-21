@@ -1,17 +1,21 @@
 package com.cochalla.cochalla.dto;
 
-import java.util.List;
+import java.time.LocalDateTime;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Setter;
 
+@AllArgsConstructor
 @Getter
-@Setter
 public class CommentResponseDto {
-    List<CommentDto> content;
-    Boolean isLast;
-    Integer totalPages;
-    Long totalElements;
-    Integer size;
-    Integer page;
+
+    // Comment
+    Integer commentId;
+    String content;
+    LocalDateTime createdAt;
+    
+    // User
+    String userId;
+    String nickname;
+    Integer profileImg;
 }

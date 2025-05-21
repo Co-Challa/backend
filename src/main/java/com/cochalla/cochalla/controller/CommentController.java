@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.cochalla.cochalla.dto.CommentDto;
+import com.cochalla.cochalla.dto.CommentResponseDto;
 import com.cochalla.cochalla.dto.CommentRequestDto;
 import com.cochalla.cochalla.dto.CommentResponseDto;
 import com.cochalla.cochalla.service.CommentServiceImpl;
@@ -30,11 +30,11 @@ public class CommentController {
     @GetMapping("/comment/{userId}")
     public ResponseEntity<?> getUserComments(
         @PathVariable String userId,
-        @RequestParam(defaultValue = "0") Integer page,
-        @RequestParam(defaultValue = "10") Integer size
+        @RequestParam Integer offset,
+        @RequestParam Integer limit
     ) {
         try {
-            CommentResponseDto commentList = commentService.getUserCommentList(userId, page, size);
+            List<CommentResponseDto> commentList = commentService.getUserCommentList(userId, offset, limit);
 
             return ResponseEntity.ok().body(commentList);
         } catch (Exception e) {
@@ -44,14 +44,14 @@ public class CommentController {
     
     @GetMapping("/my-comments")
     public ResponseEntity<?> getmyComments(
-        @RequestParam(defaultValue = "0") Integer page,
-        @RequestParam(defaultValue = "10") Integer size,
+        @RequestParam Integer offset,
+        @RequestParam Integer limit,
         @AuthenticationPrincipal UserDetails userDetails
     ) {
         try {
             String userId = userDetails.getUsername();
 
-            CommentResponseDto commentList = commentService.getUserCommentList(userId, page, size);
+            List<CommentResponseDto> commentList = commentService.getUserCommentList(userId, offset, limit);
 
             return ResponseEntity.ok().body(commentList);
         } catch (Exception e) {
@@ -62,11 +62,11 @@ public class CommentController {
     @GetMapping("/comment/list")
     public ResponseEntity<?> getMethodName(
         @RequestParam Integer postId,
-        @RequestParam(defaultValue = "0") Integer page,
-        @RequestParam(defaultValue = "10") Integer size
+        @RequestParam Integer offset,
+        @RequestParam Integer limit
     ) {
         try {
-            CommentResponseDto commentList = commentService.getPostCommentList(postId, page, size);
+            List<CommentResponseDto> commentList = commentService.getPostCommentList(postId, offset, limit);
 
             return ResponseEntity.ok(commentList);
         } catch (Exception e) {
