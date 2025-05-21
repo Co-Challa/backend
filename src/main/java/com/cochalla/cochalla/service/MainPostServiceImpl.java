@@ -44,7 +44,7 @@ public class MainPostServiceImpl implements MainPostService {
     private MainPostDto convertToDto(Post post) {
         String userId = post.getUser() != null ? post.getUser().getUserId() : "";
         String nickname = post.getUser() != null ? post.getUser().getNickname() : "";
-        String userImage = post.getUser() != null ? getUserImageUrl(post.getUser().getProfileImg()) : "";
+        Integer profileImgCode = post.getUser() != null ? post.getUser().getProfileImg() : null;
 
         String title = post.getSummary() != null ? post.getSummary().getTitle() : "";
         String content = post.getSummary() != null ? post.getSummary().getContent() : "";
@@ -59,22 +59,12 @@ public class MainPostServiceImpl implements MainPostService {
                 .content(content)
                 .userId(userId)
                 .nickname(nickname)
-                .userImage(userImage)
+                .profileImgCode(profileImgCode)
                 .createdAt(createdAt)
                 .likesCount(likesCount)
                 .commentsCount(commentsCount)
                 .build();
     }
 
-    private String getUserImageUrl(Integer profileImgCode) {
-        if (profileImgCode == null)
-            return "/images/default_profile.png";
 
-        switch (profileImgCode) {
-            case 1: return "/images/profile1.png";
-            case 2: return "/images/profile2.png";
-            case 3: return "/images/profile3.png";
-            default: return "/images/default_profile.png";
-        }
-    }
 }
