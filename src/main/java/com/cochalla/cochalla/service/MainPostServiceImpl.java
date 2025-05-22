@@ -23,7 +23,7 @@ public class MainPostServiceImpl implements MainPostService {
     @Override
     public List<MainPostDto> getPostSummariesByPage(int offset, int limit) {
         Pageable pageable = PageRequest.of(offset/limit ,limit); // 코드 수정(offset / limit = pageNumber)
-        List<Post> posts = mainpostRepository.findAllByOrderByPostIdDesc(pageable);
+        List<Post> posts = postRepository.findAllByOrderByPostIdDesc(pageable);
 
         return posts.stream()
                 .map(this::convertToDto)

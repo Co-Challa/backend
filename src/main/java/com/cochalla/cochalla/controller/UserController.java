@@ -8,7 +8,6 @@ import com.cochalla.cochalla.service.UserService;
 
 import lombok.RequiredArgsConstructor;
 
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -28,7 +27,7 @@ public class UserController {
     public ResponseEntity<String> login(@RequestBody LoginRequestDto requestDto) {
         String token = user_service.login(requestDto);
         return ResponseEntity.ok()
-        .header("Authorization", "Bearer " + token)
-        .body("로그인 성공");
+                .header("Authorization", "Bearer " + token)
+                .body("로그인 성공");
     }
 }
