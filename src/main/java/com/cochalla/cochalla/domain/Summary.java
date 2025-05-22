@@ -21,7 +21,6 @@ public class Summary {
     @JoinColumn(name = "chat_id", nullable = false)
     private Chat chat;
 
-    @Column(length = 255)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
