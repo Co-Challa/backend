@@ -13,7 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
-import com.cochalla.cochalla.client.GptClient;
+import com.cochalla.cochalla.client.GptAiClient;
 import com.cochalla.cochalla.domain.Answer;
 import com.cochalla.cochalla.domain.Chat;
 import com.cochalla.cochalla.domain.Question;
@@ -41,7 +41,7 @@ import lombok.extern.slf4j.Slf4j;
 @Transactional(readOnly = true)
 public class ChatService {
 
-  private final GptClient gptClient;
+  private final GptAiClient gptClient;
 
   private final ChatRepository chatRepository;
   private final SummaryRepository summaryRepository;

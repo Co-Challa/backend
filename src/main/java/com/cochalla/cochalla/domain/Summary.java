@@ -25,11 +25,6 @@ public class Summary {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @Column(length = 255)
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
-
     @Lob
     @Column(columnDefinition = "TEXT")
     private String title;

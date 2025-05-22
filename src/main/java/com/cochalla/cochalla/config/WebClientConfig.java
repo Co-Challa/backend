@@ -10,14 +10,14 @@ import org.springframework.web.reactive.function.client.WebClient;
 @Configuration
 public class WebClientConfig {
 
-  @Value("${gpt.api.base-url}")
+  @Value("${openai.api.url}")
   private String baseUrl;
 
-  @Value("${gpt.api.key}")
+  @Value("${openai.api.key}")
   private String apiKey;
 
   @Bean
-  public WebClient webClient() {
+  public WebClient GptAiClient() {
     return WebClient.builder()
         .baseUrl(baseUrl) // 예: https://api.openai.com
         .defaultHeader(HttpHeaders.AUTHORIZATION, "Bearer " + apiKey)

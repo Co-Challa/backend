@@ -1,10 +1,5 @@
 package com.cochalla.cochalla.domain;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.PrePersist;
-import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -61,6 +56,10 @@ public class User {
     @PrePersist
     protected void onCreate() {
         this.createdAt = LocalDateTime.now();
+    }
+
+    public void markSummaryAsDone() {
+        this.lastSummaryDate = LocalDate.now();
     }
 
     public void setNickname(String nickname) {
