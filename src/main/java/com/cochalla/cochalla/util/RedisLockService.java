@@ -10,14 +10,14 @@ import java.time.Duration;
 @RequiredArgsConstructor
 public class RedisLockService {
 
-    private final StringRedisTemplate redisTemplate;
+  private final StringRedisTemplate redisTemplate;
 
-    public boolean acquireLock(String key, Duration ttl) {
-        Boolean result = redisTemplate.opsForValue().setIfAbsent(key, "locked", ttl);
-        return Boolean.TRUE.equals(result);
-    }
+  public boolean acquireLock(String key, Duration ttl) {
+    Boolean result = redisTemplate.opsForValue().setIfAbsent(key, "locked", ttl);
+    return Boolean.TRUE.equals(result);
+  }
 
-    public void releaseLock(String key) {
-        redisTemplate.delete(key);
-    }
+  public void releaseLock(String key) {
+    redisTemplate.delete(key);
+  }
 }
