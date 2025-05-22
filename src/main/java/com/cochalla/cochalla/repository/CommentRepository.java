@@ -7,23 +7,26 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import com.cochalla.cochalla.domain.Comment;
-import com.cochalla.cochalla.dto.CommentDto;
+import com.cochalla.cochalla.dto.CommentResponseDto;
 
 public interface CommentRepository extends JpaRepository<Comment, Integer>{
     
     @Query("""
-        SELECT new com.cochalla.cochalla.dto.CommentDto(
+        SELECT new com.cochalla.cochalla.dto.CommentResponseDto(
         c.postCommentId, c.content, c.createdAt, u.userId, u.nickname, u.profileImg)
         FROM Comment c JOIN c.user u WHERE c.post.postId = :postId
     """)
-    Page<CommentDto> findCommentsByPostId(@Param("postId") Integer postId, Pageable pageable);
+    Page<CommentResponseDto> findCommentsByPostId(@Param("postId") Integer postId, Pageable pageable);
 
     @Query("""
-        SELECT new com.cochalla.cochalla.dto.CommentDto(
+        SELECT new com.cochalla.cochalla.dto.CommentResponseDto(
         c.postCommentId, c.content, c.createdAt, u.userId, u.nickname, u.profileImg)
         FROM Comment c JOIN c.user u WHERE c.user.userId = :userId
     """)
-    Page<CommentDto> findCommentsByUserId(@Param("userId") String userId, Pageable pageable);
+    Page<CommentResponseDto> findCommentsByUserId(@Param("userId") String userId, Pageable pageable);
 
-    Boolean existsByPostCommentIdAndUser_userId(Integer commentId, String userId);
+    @Query("SELECT c.post.postId FROM Comment c WHERE c.postCommentId = :commentId AND c.user.userId = :userId")
+    Integer findPostIdByCommentIdAndUserId(@Param("commentId") Integer commentId, @Param("userId") String userId);
+
+    Long countByPost_postId(Integer postId);
 }

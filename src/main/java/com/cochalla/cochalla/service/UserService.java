@@ -46,15 +46,9 @@ public class UserService {
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
 
         if (!password_encoder.matches(requestDto.getPassword(), user.getPassword())) {
-            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+            throw new NotFoundException("비밀번호가 일치하지 않습니다.");
         }
 
         return jwtUtil.createToken(user.getUserId());
     }
-
-    public User findByIdOrThrow(String userId) {
-        return user_repository.findByUserId(userId)
-                .orElseThrow(() -> new NotFoundException(("해당 유저를 찾을 수 없습니다: " + userId)));
-    }
-
 }

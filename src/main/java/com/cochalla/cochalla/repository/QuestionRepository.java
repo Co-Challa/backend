@@ -10,8 +10,10 @@ import com.cochalla.cochalla.domain.Question;
 
 public interface QuestionRepository extends JpaRepository<Question, Integer> {
 
-  // List<Question> findWithAnswersByChatIdAndUserId(Integer chatId, String
-  // userId);
+  List<Question> findByChat_ChatIdOrderByCreatedAtAsc(Integer chatId);
+
+  List<Question> findByChat_ChatId(Integer chatId);
+
   @Query("""
           SELECT q FROM Question q
           LEFT JOIN FETCH q.answer
@@ -21,5 +23,4 @@ public interface QuestionRepository extends JpaRepository<Question, Integer> {
   List<Question> findWithAnswersByChatIdAndUserId(@Param("chatId") Integer chatId, @Param("userId") String userId);
 
   List<Question> findTop3ByChat_ChatIdOrderByCreatedAtDesc(Integer chatId);
-
 }

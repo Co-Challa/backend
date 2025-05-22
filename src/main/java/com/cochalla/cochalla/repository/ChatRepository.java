@@ -1,10 +1,9 @@
 package com.cochalla.cochalla.repository;
 
-import java.util.Optional;
-
+import com.cochalla.cochalla.domain.Chat;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.cochalla.cochalla.domain.Chat;
+import java.util.Optional;
 
 public interface ChatRepository extends JpaRepository<Chat, Integer> {
 
