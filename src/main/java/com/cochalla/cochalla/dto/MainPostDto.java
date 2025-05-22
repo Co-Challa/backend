@@ -13,7 +13,6 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class MainPostDto {
-
     private Integer postId;
     
     private String title;
