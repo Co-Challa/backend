@@ -40,4 +40,6 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
     Boolean existsByPostIdAndUser_userId(Integer postId, String userId);
 
     List<Post> findAllByOrderByPostIdDesc(Pageable pageable); 
+
+    List<Post> findByIsPublicOrderByPostIdDesc (Boolean isPublic, Pageable pageable);
 }
