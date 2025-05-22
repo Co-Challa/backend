@@ -1,7 +1,6 @@
 package com.cochalla.cochalla.service;
 
 import com.cochalla.cochalla.dto.*;
-import com.cochalla.cochalla.domain.Post;
 import com.cochalla.cochalla.domain.User;
 import com.cochalla.cochalla.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;

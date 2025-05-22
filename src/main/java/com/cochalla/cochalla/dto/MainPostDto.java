@@ -14,6 +14,7 @@ import lombok.*;
 @AllArgsConstructor
 public class MainPostDto {
     private Integer postId;
+    
     private String title;
     private String content;
 
@@ -26,8 +27,8 @@ public class MainPostDto {
     private Long likesCount;
     private Long commentsCount;
 
-    private boolean liked; 
-    private Boolean likeState;
+    private Boolean liked;
+    private String likeState;
 
 }
 

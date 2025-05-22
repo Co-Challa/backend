@@ -7,7 +7,6 @@ import com.cochalla.cochalla.service.strategy.SummaryStrategyRouter;
 import com.cochalla.cochalla.util.RedisLockService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
