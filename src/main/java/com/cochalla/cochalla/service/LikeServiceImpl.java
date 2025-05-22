@@ -54,5 +54,13 @@ public class LikeServiceImpl implements LikeService {
             likeRepository.deleteById(likeId);
         }
     }
+
+    @Override
+    public Long getTotalLikeCount(Integer postId) {
+        if (!postRepository.existsById(postId))
+            throw new NoSuchElementException(postId + "번 게시물이 존재하지 않습니다.");
+
+        return likeRepository.countByPost_postId(postId);
+    }
     
 }

@@ -12,9 +12,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.cochalla.cochalla.dto.PostPageDto;
+import com.cochalla.cochalla.dto.PostResponseDto;
+import com.cochalla.cochalla.dto.PostRequestDto;
 import com.cochalla.cochalla.service.LikeServiceImpl;
 import com.cochalla.cochalla.service.PostServiceImpl;
 
@@ -32,10 +34,13 @@ public class PostController {
     LikeServiceImpl likeService;
 
     @GetMapping("/post/{postId}")
-    public ResponseEntity<PostPageDto> getPost(@PathVariable Integer postId) {
-        PostPageDto response = null;
+    public ResponseEntity<PostResponseDto> getPost(
+        @PathVariable Integer postId,
+        @RequestParam(required = false) String userId        
+    ) {
         try {
-            response = postService.get(postId);
+            PostResponseDto response = postService.get(postId, userId);
+
             return ResponseEntity.ok(response);
         } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().build();
@@ -61,13 +66,13 @@ public class PostController {
     @PatchMapping("/post/{postId}")
     public ResponseEntity<?> patchPost(
         @PathVariable Integer postId, 
-        @RequestBody Boolean isPublic,
+        @RequestBody PostRequestDto postRequestDto, 
         @AuthenticationPrincipal UserDetails userDetails
     ) {
         try {
             String userId = userDetails.getUsername();
 
-            postService.setPublicState(postId, userId, isPublic);
+            postService.setPublicState(postId, userId, postRequestDto.getIsPublic());
 
             return ResponseEntity.ok().build();
         } catch (NoSuchElementException e) {
@@ -79,15 +84,17 @@ public class PostController {
     @ResponseBody
     public ResponseEntity<?> postLike(
         @PathVariable Integer postId,
-        @RequestBody Boolean isLike,
+        @RequestBody PostRequestDto postRequestDto,
         @AuthenticationPrincipal UserDetails userDetails
     ) {
         try {
             String userId = userDetails.getUsername();
 
-            likeService.setLikeState(postId, userId, isLike);
+            likeService.setLikeState(postId, userId, postRequestDto.getIsLike());
 
-            return ResponseEntity.ok().build();
+            Long totalLikeCount = likeService.getTotalLikeCount(postId);
+
+            return ResponseEntity.ok(totalLikeCount);
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
         }
