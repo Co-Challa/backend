@@ -68,10 +68,10 @@ public class SummaryService {
             }
 
             /*
-            * <<NOTICE>> - user.markSummaryAsDone();
-            * JPA 변경 감지(Persistence Context)에 의해 lastSummaryDate가 자동 반영됨
-            * 명시적 save(user)는 생략 가능 (단, 트랜잭션 범위 내에 있어야 함)
-            * */
+             * <<NOTICE>> - user.markSummaryAsDone();
+             * JPA 변경 감지(Persistence Context)에 의해 lastSummaryDate가 자동 반영됨
+             * 명시적 save(user)는 생략 가능 (단, 트랜잭션 범위 내에 있어야 함)
+             */
 
             try {
                 List<QuestionAnswerPairDto> qaList = qaService.getQAPairs(latestChat);

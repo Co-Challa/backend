@@ -21,9 +21,31 @@ public class Answer {
     @JoinColumn(name = "question_id", nullable = false)
     private Question question;
 
-    @Column(length = 500)
+    @Lob
     private String answer;
 
     @Column
     private LocalDateTime createdAt;
+
+    @PrePersist
+    public void prePersist() {
+        this.createdAt = LocalDateTime.now();
+    }
+
+    // == 연관관게 메서드 ==
+    public void setQuestion(Question question) {
+        this.question = question;
+        if (question.getAnswer() != this) {
+            question.setAnswer(this);
+        }
+    }
+
+    // == 생성 메서드 ==//
+    public static Answer createAnswer(Question question, String answerText) {
+        Answer answer = new Answer();
+        answer.answer = answerText;
+        answer.setQuestion(question); // 양방향 연관관계 자동 설정
+        return answer;
+    }
+
 }

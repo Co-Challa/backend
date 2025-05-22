@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 
 import com.cochalla.cochalla.dto.LoginRequestDto;
 import com.cochalla.cochalla.dto.SignupRequestDto;
+import com.cochalla.cochalla.exception.NotFoundException;
 import com.cochalla.cochalla.domain.User;
 import com.cochalla.cochalla.repository.UserRepository;
 import com.cochalla.cochalla.security.JwtUtil;
@@ -18,12 +19,12 @@ public class UserService {
     private final PasswordEncoder password_encoder;
     private final JwtUtil jwtUtil;
 
-    public void signup(SignupRequestDto request){
-        if (user_repository.existsByUserId(request.getUserId())){
+    public void signup(SignupRequestDto request) {
+        if (user_repository.existsByUserId(request.getUserId())) {
             throw new IllegalArgumentException("이미 사용 중인 아이디입니다.");
         }
 
-        if (user_repository.existsByNickname(request.getNickname())){
+        if (user_repository.existsByNickname(request.getNickname())) {
             throw new IllegalArgumentException("이미 사용 중인 닉네임입니다.");
         }
 
@@ -40,14 +41,19 @@ public class UserService {
         user_repository.save(user);
     }
 
-    public String login(LoginRequestDto requestDto){
+    public String login(LoginRequestDto requestDto) {
         User user = user_repository.findById(requestDto.getUserId())
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
 
-        if (!password_encoder.matches(requestDto.getPassword(), user.getPassword())){
+        if (!password_encoder.matches(requestDto.getPassword(), user.getPassword())) {
             throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
         }
 
         return jwtUtil.createToken(user.getUserId());
+    }
+
+    public User findByIdOrThrow(String userId) {
+        return user_repository.findByUserId(userId)
+                .orElseThrow(() -> new NotFoundException(("해당 유저를 찾을 수 없습니다: " + userId)));
     }
 }

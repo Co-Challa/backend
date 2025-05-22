@@ -13,7 +13,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.cochalla.cochalla.dto.CommentDto;
+import com.cochalla.cochalla.dto.CommentResponseDto;
+import com.cochalla.cochalla.dto.CommentRequestDto;
+import com.cochalla.cochalla.dto.CommentResponseDto;
 import com.cochalla.cochalla.service.CommentServiceImpl;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -26,9 +28,13 @@ public class CommentController {
     CommentServiceImpl commentService;
 
     @GetMapping("/comment/{userId}")
-    public ResponseEntity<?> getUserComments(@PathVariable String userId) {
+    public ResponseEntity<?> getUserComments(
+        @PathVariable String userId,
+        @RequestParam Integer offset,
+        @RequestParam Integer limit
+    ) {
         try {
-            List<CommentDto> commentList = commentService.getUserCommentList(userId);
+            List<CommentResponseDto> commentList = commentService.getUserCommentList(userId, offset, limit);
 
             return ResponseEntity.ok().body(commentList);
         } catch (Exception e) {
@@ -37,11 +43,15 @@ public class CommentController {
     }
     
     @GetMapping("/my-comments")
-    public ResponseEntity<?> getmyComments(@AuthenticationPrincipal UserDetails userDetails) {
+    public ResponseEntity<?> getmyComments(
+        @RequestParam Integer offset,
+        @RequestParam Integer limit,
+        @AuthenticationPrincipal UserDetails userDetails
+    ) {
         try {
             String userId = userDetails.getUsername();
 
-            List<CommentDto> commentList = commentService.getUserCommentList(userId);
+            List<CommentResponseDto> commentList = commentService.getUserCommentList(userId, offset, limit);
 
             return ResponseEntity.ok().body(commentList);
         } catch (Exception e) {
@@ -49,27 +59,40 @@ public class CommentController {
         }
     }
 
+    @GetMapping("/comment/list")
+    public ResponseEntity<?> getPostComments(
+        @RequestParam Integer postId,
+        @RequestParam Integer offset,
+        @RequestParam Integer limit
+    ) {
+        try {
+            List<CommentResponseDto> commentList = commentService.getPostCommentList(postId, offset, limit);
+
+            return ResponseEntity.ok(commentList);
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+    
 
     @PostMapping("/comment/{postId}")
-    @ResponseBody
     public ResponseEntity<?> postComment(
         @PathVariable Integer postId, 
-        @RequestBody String comment,
+        @RequestBody CommentRequestDto commentRequestDto,
         @AuthenticationPrincipal UserDetails userDetails
     ) {
         try {
             String userId = userDetails.getUsername();
 
-            commentService.create(postId, userId, comment);
+            Long totalCommentCount = commentService.create(postId, userId, commentRequestDto.getComment());
 
-            return ResponseEntity.created(null).build();
+            return ResponseEntity.ok(totalCommentCount);
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
         }
     }
 
     @DeleteMapping("comment/{commentId}")
-    @ResponseBody
     public ResponseEntity<?> deleteComment(
         @PathVariable Integer commentId,
         @AuthenticationPrincipal UserDetails userDetails
@@ -77,9 +100,9 @@ public class CommentController {
         try {
             String userId = userDetails.getUsername();
 
-            commentService.delete(commentId, userId);
+            Long totalCommentCount = commentService.delete(commentId, userId);
 
-            return ResponseEntity.ok().build();
+            return ResponseEntity.ok(totalCommentCount);
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
         }

@@ -7,6 +7,6 @@ import java.util.Optional;
 
 public interface ChatRepository extends JpaRepository<Chat, Integer> {
 
-    Optional<Chat> findTopByUser_UserIdOrderByCreatedAtDesc(String userId);
+  Optional<Chat> findTopByUser_UserIdOrderByCreatedAtDesc(String userId);
 
 }

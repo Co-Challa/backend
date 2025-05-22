@@ -16,12 +16,10 @@ public class Summary {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer summaryId;
 
-    @ManyToOne
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "chat_id", nullable = false)
     private Chat chat;
 
-    @Column(length = 255)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
@@ -29,16 +27,13 @@ public class Summary {
     @Lob
     @Column(columnDefinition = "TEXT")
     private String title;
-    
+
     @Lob
     @Column(columnDefinition = "TEXT")
     private String content;
 
     @Column
     private LocalDateTime createdAt;
-
-    @Column
-    private Integer retryCount;
 
     @PrePersist
     protected void onCreate() {
