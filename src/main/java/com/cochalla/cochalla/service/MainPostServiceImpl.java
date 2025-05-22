@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.cochalla.cochalla.domain.Post;
 import com.cochalla.cochalla.dto.MainPostDto;
+import com.cochalla.cochalla.repository.LikeRepository;
 import com.cochalla.cochalla.repository.PostRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -18,31 +19,32 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class MainPostServiceImpl implements MainPostService {
     private final PostRepository postRepository;
+    private final LikeRepository likeRepository;
 
     // 무한 스크롤
     @Override
-    public List<MainPostDto> getPostSummariesByPage(int offset, int limit) {
+    public List<MainPostDto> getPostSummariesByPage(int offset, int limit,String currentUserId) {
         Pageable pageable = PageRequest.of(offset/limit ,limit); // 코드 수정(offset / limit = pageNumber)
         List<Post> posts = postRepository.findByIsPublicOrderByPostIdDesc(true,pageable);
 
         return posts.stream()
-                .map(this::convertToDto)
+                .map(post -> convertToDto(post, currentUserId))
                 .collect(Collectors.toList());
     }
 
     //조회
     @Override
-    public List<MainPostDto> getAllPostSummaries() {
+    public List<MainPostDto> getAllPostSummaries(String currentUserId) {
         List<Post> posts = postRepository.findAll();
 
         return posts.stream()
-                .map(this::convertToDto)
+                .map(post -> convertToDto(post, currentUserId))
                 .collect(Collectors.toList());
     }
 
     
     // 공통 DTO 변환 메서드
-    private MainPostDto convertToDto(Post post) {
+    private MainPostDto convertToDto(Post post,String currentUserId) {
         String userId = post.getUser() != null ? post.getUser().getUserId() : "";
         String nickname = post.getUser() != null ? post.getUser().getNickname() : "";
         Integer profileImgCode = post.getUser() != null ? post.getUser().getProfileImg() : null;
@@ -53,6 +55,8 @@ public class MainPostServiceImpl implements MainPostService {
 
         long likesCount = post.getLikes() != null ? post.getLikes().size() : 0L;
         long commentsCount = post.getComments() != null ? post.getComments().size() : 0L;
+
+        Boolean liked = likeRepository.existsByUser_userIdAndPost_postId(currentUserId,post.getPostId());
 
         
 
@@ -66,6 +70,7 @@ public class MainPostServiceImpl implements MainPostService {
                 .createdAt(createdAt)
                 .likesCount(likesCount)
                 .commentsCount(commentsCount)
+                .liked(liked)
                 .build();
     }
 

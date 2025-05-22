@@ -28,7 +28,7 @@ public class MainPostDto {
     private Long likesCount;
     private Long commentsCount;
 
-    private Boolean liked; 
+    private Boolean liked;
     private String likeState;
 
 }
