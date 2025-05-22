@@ -87,4 +87,54 @@ public class SummaryService {
             }
         }
     }
+
+    public void saveEmptySummary(User user, Chat chat) {
+        Optional<Summary> optional = summaryRepository.findByChat(chat);
+
+        if (optional.isPresent()) {
+            Summary summary = optional.get();
+            // 이미 성공 요약이 있으면(타이틀/컨텐츠가 모두 null이 아님) 아무것도 하지 않음
+            if (summary.getTitle() != null && summary.getContent() != null) {
+                log.warn("성공 Summary가 이미 존재하여 실패 요약 저장을 생략합니다. ChatId: {}", chat.getChatId());
+                return;
+            }
+            // 실패 요약이 이미 있다면, 중복 저장 방지(원하면 로그만)
+            log.warn("빈 Summary가 이미 존재하여 중복 저장을 생략합니다. ChatId: {}", chat.getChatId());
+            return;
+        }
+
+        // Summary가 아예 없는 경우에만 실패 Summary 저장
+        Summary summary = Summary.of(user, chat, null, null);
+        summaryRepository.save(summary);
+        log.info("빈 Summary 저장 (요약 실패) - ChatId: {}, UserId: {}", chat.getChatId(), user.getUserId());
+
+        // Redis 상태 동기화
+        summaryStatusService.setFailed(user.getUserId());
+    }
+
+    public void retrySummary(Summary summary) {
+        // 1. 실패 Summary(즉, title/content가 모두 null)만 재요약 가능
+        if (summary.getTitle() != null && summary.getContent() != null) {
+            throw new IllegalStateException("이미 성공한 Summary는 재요약할 수 없습니다.");
+        }
+
+        // 2. 요약 요청 직전 상태를 PENDING으로 변경 (Redis 동기화)
+        summaryStatusService.setPending(summary.getUser().getUserId());
+
+        // 3. 질문-답변 리스트 확보
+        List<QuestionAnswerPairDto> qaList = qaService.getQAPairs(summary.getChat());
+
+        // 4. 전략 분기(질문 수 기준)
+        summaryStrategyRouter.summarize(summary.getChat(), qaList);
+
+        // 5. (전략 내부에서 성공/실패 Redis 상태 관리, Summary 저장까지 모두 처리됨)
+    }
+
+    public void testGenerateSummary(Chat chat) {
+        // 질문-답변 페어 리스트를 확보
+        List<QuestionAnswerPairDto> qaList = qaService.getQAPairs(chat);
+
+        // 전략 분기는 Router가 알아서 처리!
+        summaryStrategyRouter.summarize(chat, qaList);
+    }
 }

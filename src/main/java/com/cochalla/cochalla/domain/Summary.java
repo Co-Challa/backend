@@ -1,6 +1,7 @@
 package com.cochalla.cochalla.domain;
 
 import com.cochalla.cochalla.dto.GptSummaryResponseDto;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -24,6 +25,11 @@ public class Summary {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
+    @OneToOne(mappedBy = "summary")
+    @JsonIgnore
+    @ToString.Exclude
+    private Post post;
+
     @Lob
     @Column(columnDefinition = "TEXT")
     private String title;
@@ -40,18 +46,31 @@ public class Summary {
         this.createdAt = LocalDateTime.now();
     }
 
+    @Builder
+    public Summary(User user, Chat chat, String title, String content, LocalDateTime createdAt) {
+        this.user = user;
+        this.chat = chat;
+        this.title = title;
+        this.content = content;
+        this.createdAt = createdAt;
+    }
+
     public static Summary of(User user, Chat chat, String title, String content) {
-        Summary summary = new Summary();
-        summary.user = user;
-        summary.chat = chat;
-        summary.title = title;
-        summary.content = content;
-        return summary;
+        if (user == null || chat == null) {
+            throw new IllegalArgumentException("Summary 생성 시 user와 chat은 null일 수 없습니다.");
+        }
+
+        return Summary.builder()
+                .user(user)
+                .chat(chat)
+                .title(title)
+                .content(content)
+                .createdAt(LocalDateTime.now())
+                .build();
     }
 
     public void updateFromResponse(GptSummaryResponseDto dto) {
         this.title = dto.getTitle();
         this.content = dto.getContent();
     }
-
 }

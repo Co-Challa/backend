@@ -2,6 +2,8 @@ package com.cochalla.cochalla.repository;
 
 import java.util.Optional;
 
+import com.cochalla.cochalla.domain.Chat;
+import com.cochalla.cochalla.domain.Summary;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -36,4 +38,7 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
     Optional<Post> findByPostIdAndUser_userId(Integer postId, String userId);
 
     Boolean existsByPostIdAndUser_userId(Integer postId, String userId);
+
+    Optional<Post> findBySummary_Chat(Chat chat);
+    Optional<Post> findBySummary(Summary summary);
 }
