@@ -27,7 +27,7 @@ public class UserController {
     public ResponseEntity<String> login(@RequestBody LoginRequestDto requestDto) {
         String token = user_service.login(requestDto);
         return ResponseEntity.ok()
-        .header("Authorization", "Bearer " + token)
-        .body("로그인 성공");
+                .header("Authorization", "Bearer " + token)
+                .body("로그인 성공");
     }
 }

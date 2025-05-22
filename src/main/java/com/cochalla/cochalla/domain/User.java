@@ -7,15 +7,23 @@ import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
+
+import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
-@Getter
+@Data
 @Entity
+@Getter
 @Builder
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Table(name = "user")
 public class User {
@@ -45,10 +53,20 @@ public class User {
     }
 
     @Column
-    private LocalDateTime lastSummaryDate;
+    private LocalDate lastSummaryDate;
+
+
+    @OneToMany(mappedBy = "user")
+    private List<Chat> chats = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user")
+    private List<Summary> summaries = new ArrayList<>();
+
+    public void markSummaryAsDone() {
+        this.lastSummaryDate = LocalDate.now();
+    }
 
     public void setNickname(String nickname) { this.nickname = nickname; }
     public void setProfileImg(Integer profileImg) { this.profileImg = profileImg; }
     public void setResTime(Integer resTime) { this.resTime = resTime; }
 }
-
