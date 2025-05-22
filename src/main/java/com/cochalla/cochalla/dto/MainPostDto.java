@@ -26,5 +26,8 @@ public class MainPostDto {
     private Long likesCount;
     private Long commentsCount;
 
+    private boolean liked; 
+    private Boolean likeState;
+
 }
 

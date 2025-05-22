@@ -22,7 +22,7 @@ public class MainPostServiceImpl implements MainPostService {
     // 무한 스크롤
     @Override
     public List<MainPostDto> getPostSummariesByPage(int offset, int limit) {
-        Pageable pageable = PageRequest.of(offset / limit, limit);
+        Pageable pageable = PageRequest.of(offset/limit ,limit); // 코드 수정(offset / limit = pageNumber)
         List<Post> posts = mainpostRepository.findAllByOrderByPostIdDesc(pageable);
 
         return posts.stream()
@@ -52,6 +52,7 @@ public class MainPostServiceImpl implements MainPostService {
 
         long likesCount = post.getLikes() != null ? post.getLikes().size() : 0L;
         long commentsCount = post.getComments() != null ? post.getComments().size() : 0L;
+
 
         return MainPostDto.builder()
                 .postId(post.getPostId())
