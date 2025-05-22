@@ -35,7 +35,7 @@ public class SecurityConfig {
         http.csrf().disable()
                 .cors().and()
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/signup", "/signin", "/post/*", "/comment/list").permitAll()
+                        .requestMatchers("/signup", "/signin", "/post/**", "/comment/list").permitAll()
                         .anyRequest().authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(new JwtAuthenticationFilter(jwtFilter, userDetailService),
