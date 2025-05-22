@@ -2,6 +2,7 @@ package com.cochalla.cochalla.controller;
 
 import java.util.List;
 
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -26,9 +27,6 @@ public class MainPostController {
         int offset = page * PAGE_SIZE; 
         return mainpostService.getPostSummariesByPage(offset, PAGE_SIZE);
     }
-
-
-
     
 }
   

@@ -6,13 +6,11 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.cochalla.cochalla.domain.LikeId;
 import com.cochalla.cochalla.domain.Post;
 import com.cochalla.cochalla.dto.PostResponseDto;
 import com.cochalla.cochalla.repository.CommentRepository;
 import com.cochalla.cochalla.repository.LikeRepository;
 import com.cochalla.cochalla.repository.PostRepository;
-import com.cochalla.cochalla.repository.UserRepository;
 
 import jakarta.transaction.Transactional;
 

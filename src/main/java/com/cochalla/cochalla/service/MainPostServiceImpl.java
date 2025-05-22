@@ -23,7 +23,7 @@ public class MainPostServiceImpl implements MainPostService {
     @Override
     public List<MainPostDto> getPostSummariesByPage(int offset, int limit) {
         Pageable pageable = PageRequest.of(offset/limit ,limit); // 코드 수정(offset / limit = pageNumber)
-        List<Post> posts = postRepository.findAllByOrderByPostIdDesc(pageable);
+        List<Post> posts = postRepository.findByIsPublicOrderByPostIdDesc(true,pageable);
 
         return posts.stream()
                 .map(this::convertToDto)
@@ -40,6 +40,7 @@ public class MainPostServiceImpl implements MainPostService {
                 .collect(Collectors.toList());
     }
 
+    
     // 공통 DTO 변환 메서드
     private MainPostDto convertToDto(Post post) {
         String userId = post.getUser() != null ? post.getUser().getUserId() : "";
@@ -53,6 +54,7 @@ public class MainPostServiceImpl implements MainPostService {
         long likesCount = post.getLikes() != null ? post.getLikes().size() : 0L;
         long commentsCount = post.getComments() != null ? post.getComments().size() : 0L;
 
+        
 
         return MainPostDto.builder()
                 .postId(post.getPostId())
