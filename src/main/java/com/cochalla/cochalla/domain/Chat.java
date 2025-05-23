@@ -4,10 +4,12 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Entity
 @Getter
@@ -23,10 +25,15 @@ public class Chat {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    private LocalDateTime createdAt;
-
     @OneToMany(mappedBy = "chat", cascade = CascadeType.ALL)
     private List<Question> questions = new ArrayList<>();
+
+    @OneToOne(mappedBy = "chat")
+    @JsonIgnore
+    @ToString.Exclude
+    private Summary summary;
+
+    private LocalDateTime createdAt;
 
     // == 자동 생성 시간 설정 == //
     @PrePersist
@@ -45,5 +52,4 @@ public class Chat {
         chat.setUser(user);
         return chat;
     }
-
 }

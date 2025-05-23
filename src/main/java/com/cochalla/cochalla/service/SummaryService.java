@@ -71,7 +71,6 @@ public class SummaryService {
              * JPA 변경 감지(Persistence Context)에 의해 lastSummaryDate가 자동 반영됨
              * 명시적 save(user)는 생략 가능 (단, 트랜잭션 범위 내에 있어야 함)
              */
-
             try {
                 List<QuestionAnswerPairDto> qaList = qaService.getQAPairs(latestChat);
                 summaryStrategyRouter.summarize(latestChat, qaList);
@@ -85,5 +84,16 @@ public class SummaryService {
                 redisLockService.releaseLock(lockKey);
             }
         }
+    }
+
+    public void retrySummary(Summary summary) {
+        if (summary.getTitle() != null && summary.getContent() != null) {
+            throw new IllegalStateException("이미 성공한 Summary는 재요약할 수 없습니다.");
+        }
+
+        summaryStatusService.setPending(summary.getUser().getUserId());
+        List<QuestionAnswerPairDto> qaList = qaService.getQAPairs(summary.getChat());
+        summaryStrategyRouter.summarize(summary.getChat(), qaList);
+
     }
 }
