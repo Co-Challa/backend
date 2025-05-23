@@ -9,7 +9,6 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @ToString(exclude = "summary")
 @Table(name = "post")
 public class Post {

@@ -7,6 +7,7 @@ import com.cochalla.cochalla.external.gpt.GptClient;
 import com.cochalla.cochalla.external.gpt.GptRequestBuilder;
 import com.cochalla.cochalla.repository.PostRepository;
 import com.cochalla.cochalla.repository.SummaryRepository;
+import com.cochalla.cochalla.service.PostService;
 import com.cochalla.cochalla.service.SummaryStatusService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -23,9 +24,10 @@ public class StructuredSummaryStrategy extends AbstractSummaryStrategy {
             SummaryRepository summaryRepository,
             PostRepository postRepository,
             GptClient gptClient,
-            SummaryStatusService summaryStatusService
+            SummaryStatusService summaryStatusService,
+            PostService postService
     ) {
-        super(summaryRepository, postRepository, summaryStatusService);
+        super(summaryRepository, postRepository, summaryStatusService, postService);
         this.gptClient = gptClient;
     }
 
