@@ -18,4 +18,5 @@ public class UserPostDto {
     private Integer likeCnt;
     private Boolean isPublic;
     private Boolean liked;
+    private Integer summaryId;
 }
