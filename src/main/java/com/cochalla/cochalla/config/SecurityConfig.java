@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.web.filter.CorsFilter;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -24,6 +25,10 @@ import com.cochalla.cochalla.service.CustomUserDetailService;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+
+    @Value("${frontend.url}")
+    private String frontendUrl;
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -35,7 +40,7 @@ public class SecurityConfig {
         http.csrf().disable()
                 .cors().and()
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/signup", "/signin", "/post/*", "/comment/list").permitAll()
+                        .requestMatchers("/signup", "/signin", "/post/**", "/comment/list").permitAll()
                         .anyRequest().authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(new JwtAuthenticationFilter(jwtFilter, userDetailService),
@@ -53,6 +58,11 @@ public class SecurityConfig {
         config.setAllowedHeaders(List.of("*"));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
         config.setExposedHeaders(List.of("Authorization"));
+        
+        String frontendCloudtypeUrl = frontendUrl;
+        if (frontendCloudtypeUrl != null && !frontendCloudtypeUrl.isEmpty()) {
+            config.addAllowedOrigin(frontendCloudtypeUrl);
+        }
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);

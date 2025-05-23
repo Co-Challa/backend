@@ -16,7 +16,7 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
     @Query("""
                 SELECT new com.cochalla.cochalla.dto.PostResponseDto(
                     p.postId, p.isPublic,
-                    s.title, s.content, s.createdAt,
+                    s.chat.chatId, s.title, s.content, s.createdAt,
                     u.userId, u.nickname, u.profileImg,
                     (
                         CASE WHEN :currentUserId IS NOT NULL AND EXISTS (
