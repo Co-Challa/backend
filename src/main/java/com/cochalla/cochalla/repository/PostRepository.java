@@ -1,7 +1,9 @@
 package com.cochalla.cochalla.repository;
 
+import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Pageable;
 import com.cochalla.cochalla.domain.Chat;
 import com.cochalla.cochalla.domain.Summary;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -38,6 +40,10 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
     Optional<Post> findByPostIdAndUser_userId(Integer postId, String userId);
 
     Boolean existsByPostIdAndUser_userId(Integer postId, String userId);
+
+    List<Post> findAllByOrderByPostIdDesc(Pageable pageable);
+
+    List<Post> findByIsPublicOrderByPostIdDesc (Boolean isPublic, Pageable pageable);
 
     Optional<Post> findBySummary_Chat(Chat chat);
     Optional<Post> findBySummary(Summary summary);
