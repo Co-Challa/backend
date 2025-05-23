@@ -8,7 +8,6 @@ import com.cochalla.cochalla.dto.*;
 import com.cochalla.cochalla.security.CustomUserDetail;
 import com.cochalla.cochalla.service.MyPageService;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 
 @Controller
