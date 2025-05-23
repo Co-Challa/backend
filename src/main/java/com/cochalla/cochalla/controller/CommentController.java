@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.cochalla.cochalla.dto.CommentResponseDto;
 import com.cochalla.cochalla.dto.CommentRequestDto;
-import com.cochalla.cochalla.dto.CommentResponseDto;
 import com.cochalla.cochalla.service.CommentServiceImpl;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;

@@ -6,6 +6,7 @@ import com.cochalla.cochalla.dto.LoginRequestDto;
 import com.cochalla.cochalla.dto.SignupRequestDto;
 import com.cochalla.cochalla.service.UserService;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.http.ResponseEntity;
@@ -18,7 +19,7 @@ public class UserController {
     private final UserService user_service;
 
     @PostMapping("/signup")
-    public ResponseEntity<String> signup(@RequestBody SignupRequestDto requestDto) {
+    public ResponseEntity<String> signup(@RequestBody @Valid SignupRequestDto requestDto) {
         user_service.signup(requestDto);
         return ResponseEntity.ok("회원가입이 완료되었습니다.");
     }
