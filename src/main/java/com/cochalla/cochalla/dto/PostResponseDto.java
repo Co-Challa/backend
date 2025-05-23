@@ -16,6 +16,7 @@ public class PostResponseDto {
     Boolean isPublic;
 
     // Summary
+    Integer chatId;
     String title;
     String content;
     LocalDateTime createdAt;
