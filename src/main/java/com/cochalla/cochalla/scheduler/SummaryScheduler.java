@@ -20,7 +20,7 @@ public class SummaryScheduler {
     * 매시 정각 실행
     * 테스트용 예: 매분마다 실행 (0 * * * * *)
     * */
-    @Scheduled(cron = "0 0 * * * *")
+    @Scheduled(cron = "0 * * * * *")
     public void runHourlySummaryJob() {
         int currentHour = LocalTime.now().getHour();
         log.info("[스케줄러] {}시 요약 실행 시작", currentHour);
