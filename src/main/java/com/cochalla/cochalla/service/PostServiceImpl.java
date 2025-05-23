@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.cochalla.cochalla.domain.Post;
+import com.cochalla.cochalla.domain.Summary;
+import com.cochalla.cochalla.domain.User;
 import com.cochalla.cochalla.dto.PostResponseDto;
 import com.cochalla.cochalla.repository.CommentRepository;
 import com.cochalla.cochalla.repository.LikeRepository;
@@ -19,7 +21,7 @@ public class PostServiceImpl implements PostService {
 
     @Autowired
     PostRepository postRepository;
-    
+
     @Autowired
     CommentRepository commentRepository;
 
@@ -30,9 +32,29 @@ public class PostServiceImpl implements PostService {
     public PostResponseDto get(Integer postId, String userId) {
 
         PostResponseDto postResponseDto = postRepository.findPostResponseDto(postId, userId)
-                                    .orElseThrow(() -> new NoSuchElementException(postId + "번 게시물을 찾을 수 없습니다."));
+                .orElseThrow(() -> new NoSuchElementException(postId + "번 게시물을 찾을 수 없습니다."));
 
         return postResponseDto;
+    }
+
+    @Override
+    public void create(Summary summary) {
+
+        if (summary.getSummaryId() == null) {
+            throw new IllegalArgumentException("Summary ID cannot be null.");
+        }
+
+        User user = summary.getUser();
+        if (user == null) {
+            throw new IllegalArgumentException("User in Summary cannot be null.");
+        }
+
+        Post post = new Post();
+        post.setUser(user);
+        post.setSummary(summary);
+        post.setIsPublic(false);
+
+        postRepository.save(post);
     }
 
     @Override
@@ -53,5 +75,5 @@ public class PostServiceImpl implements PostService {
 
         postRepository.save(post);
     }
-    
+
 }
