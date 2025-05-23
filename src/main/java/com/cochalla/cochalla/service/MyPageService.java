@@ -41,14 +41,15 @@ public class MyPageService {
                 .stream()
                 .map(p -> new UserPostDto(
                         p.getPostId(),
-                        p.getSummary().getTitle(),
-                        p.getSummary().getContent(),
-                        p.getSummary().getCreatedAt(),
-                        p.getComments().size(),
-                        p.getLikes().size(),
-                        p.getIsPublic(),
-                        userLikedRepository.existsByUserUserIdAndPostPostId(userId,
-                                p.getPostId())))
+                    p.getSummary().getTitle(),
+                    p.getSummary().getContent(),
+                    p.getSummary().getCreatedAt(),
+                    p.getComments().size(),
+                    p.getLikes().size(),
+                    p.getIsPublic(),
+                    userLikedRepository.existsByUserUserIdAndPostPostId(userId, p.getPostId()),
+                    p.getSummary().getSummaryId()
+                ))
                 .collect(Collectors.toList());
     }
 

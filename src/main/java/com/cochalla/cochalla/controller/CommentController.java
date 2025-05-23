@@ -12,16 +12,16 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.cochalla.cochalla.dto.CommentResponseDto;
 import com.cochalla.cochalla.dto.CommentRequestDto;
-import com.cochalla.cochalla.dto.CommentResponseDto;
 import com.cochalla.cochalla.service.CommentServiceImpl;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 
-@Controller
+@RestController
 public class CommentController {
 
     @Autowired

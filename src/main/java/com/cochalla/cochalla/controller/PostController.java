@@ -22,14 +22,10 @@ import com.cochalla.cochalla.service.PostServiceImpl;
 
 import org.springframework.web.bind.annotation.PostMapping;
 
-
-
 @Controller
 public class PostController {
-
     @Autowired
     PostServiceImpl postService;
-
     @Autowired
     LikeServiceImpl likeService;
 
@@ -54,7 +50,6 @@ public class PostController {
     ) {
         try {
             String userId = userDetails.getUsername();
-
             postService.delete(postId, userId);
 
             return ResponseEntity.ok().build();
